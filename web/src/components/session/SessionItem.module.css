@@ -34,6 +34,7 @@
 .title {
   font-size: var(--text-sm);
   font-weight: 500;
+  color: var(--color-text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

@@ -22,10 +22,12 @@ export function MessageBubble({ message, onRetranslate }: MessageBubbleProps) {
   }
 
   return (
-    <div className={clsx(styles.container, styles.translation)}>
-      <div className={styles.content}>{message.content}</div>
+    <div className={styles.translationWrapper}>
+      <div className={clsx(styles.container, styles.translation)}>
+        <div className={styles.content}>{message.content}</div>
+      </div>
       <div className={styles.actions}>
-        <CopyButton text={message.content} />
+        <CopyButton text={message.content} className={styles.actionButton} />
         {onRetranslate && (
           <button
             className={styles.actionButton}
@@ -43,10 +45,16 @@ export function MessageBubble({ message, onRetranslate }: MessageBubbleProps) {
 interface MessageGroupProps {
   sourceMessage: Message
   translations: Message[]
+  isRetranslating?: boolean
   onRetranslate?: (text: string, parentId: string) => void
 }
 
-export function MessageGroup({ sourceMessage, translations, onRetranslate }: MessageGroupProps) {
+export function MessageGroup({
+  sourceMessage,
+  translations,
+  isRetranslating,
+  onRetranslate,
+}: MessageGroupProps) {
   return (
     <>
       <MessageBubble message={sourceMessage} />
@@ -54,7 +62,20 @@ export function MessageGroup({ sourceMessage, translations, onRetranslate }: Mes
         {translations.map((translation) => (
           <MessageBubble key={translation.id} message={translation} onRetranslate={onRetranslate} />
         ))}
+        {isRetranslating && <LoadingBubble />}
       </div>
     </>
+  )
+}
+
+export function LoadingBubble() {
+  return (
+    <div className={clsx(styles.container, styles.translation, styles.loading)}>
+      <div className={styles.loadingDots}>
+        <span />
+        <span />
+        <span />
+      </div>
+    </div>
   )
 }

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useEffect } from "react"
+import { useCallback, useMemo, useRef, useEffect, useState } from "react"
 import { Languages } from "lucide-react"
 import { useNavigate } from "@tanstack/react-router"
 import { useLocale } from "@/hooks/useLocale"
@@ -6,7 +6,7 @@ import { useTranslate } from "@/hooks/useTranslate"
 import { useSessionQuery } from "@/queries/sessions"
 import { useSessionWarning } from "@/hooks/useSessionWarning"
 import { ChatInput } from "./ChatInput"
-import { MessageGroup } from "./MessageBubble"
+import { MessageGroup, MessageBubble, LoadingBubble } from "./MessageBubble"
 import { SessionWarning } from "./SessionWarning"
 import type { Message } from "@/types/session"
 import styles from "./ChatView.module.css"
@@ -24,6 +24,8 @@ export function ChatView({ sessionId }: ChatViewProps) {
   const { t } = useLocale()
   const navigate = useNavigate()
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [pendingSource, setPendingSource] = useState<Message | null>(null)
+  const [pendingRetranslateId, setPendingRetranslateId] = useState<string | null>(null)
 
   const { data: session } = useSessionQuery(sessionId ?? "")
   const { showWarning } = useSessionWarning(sessionId)
@@ -31,6 +33,8 @@ export function ChatView({ sessionId }: ChatViewProps) {
   const { translate, retranslate, model, setModel, tone, setTone, isTranslating } = useTranslate({
     sessionId,
     onSuccess: (newSessionId) => {
+      setPendingSource(null)
+      setPendingRetranslateId(null)
       if (!sessionId) {
         navigate({ to: "/session/$sessionId", params: { sessionId: newSessionId } })
       }
@@ -66,6 +70,12 @@ export function ChatView({ sessionId }: ChatViewProps) {
 
   const handleSubmit = useCallback(
     (text: string) => {
+      setPendingSource({
+        id: `pending-${Date.now()}`,
+        content: text,
+        type: "source",
+        createdAt: Date.now(),
+      })
       translate(text)
     },
     [translate],
@@ -76,18 +86,19 @@ export function ChatView({ sessionId }: ChatViewProps) {
       // Find the source text for this translation
       const pair = messagePairs.find((p) => p.translations.some((t) => t.id === parentId))
       if (pair) {
+        setPendingRetranslateId(pair.source.id)
         retranslate(pair.source.content, parentId)
       }
     },
     [messagePairs, retranslate],
   )
 
-  // Scroll to bottom when new messages arrive
+  // Scroll to bottom when new messages arrive or pending message appears
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messagePairs])
+  }, [messagePairs, pendingSource, pendingRetranslateId])
 
-  const isEmpty = messagePairs.length === 0
+  const isEmpty = messagePairs.length === 0 && !pendingSource
 
   return (
     <div className={styles.container}>
@@ -106,9 +117,16 @@ export function ChatView({ sessionId }: ChatViewProps) {
                 key={pair.source.id}
                 sourceMessage={pair.source}
                 translations={pair.translations}
+                isRetranslating={pendingRetranslateId === pair.source.id}
                 onRetranslate={handleRetranslate}
               />
             ))}
+            {pendingSource && (
+              <>
+                <MessageBubble message={pendingSource} />
+                <LoadingBubble />
+              </>
+            )}
           </>
         )}
         <div ref={messagesEndRef} />
@@ -118,6 +136,7 @@ export function ChatView({ sessionId }: ChatViewProps) {
         model={model}
         tone={tone}
         isLoading={isTranslating}
+        autoFocus
         onModelChange={setModel}
         onToneChange={setTone}
         onSubmit={handleSubmit}

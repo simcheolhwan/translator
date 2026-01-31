@@ -4,6 +4,7 @@
 
   "header.settings": "Settings",
   "header.signOut": "Sign out",
+  "header.signOutConfirm": "Are you sure you want to sign out?",
   "header.signIn": "Sign in with Google",
 
   "sidebar.newSession": "New Session",

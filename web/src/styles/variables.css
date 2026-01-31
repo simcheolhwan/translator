@@ -1,19 +1,19 @@
 :root {
-  /* Colors - Light Mode */
-  --color-background: #ffffff;
-  --color-surface: #f8f9fa;
-  --color-border: #e1e4e8;
-  --color-text-primary: #1a1a1a;
-  --color-text-secondary: #6b7280;
-  --color-text-muted: #9ca3af;
-  --color-primary: #2563eb;
-  --color-primary-hover: #1d4ed8;
-  --color-error: #dc2626;
-  --color-success: #16a34a;
+  /* Colors - Dark Mode Only (ChatGPT-inspired grayscale) */
+  --color-background: #212121;
+  --color-surface: #2f2f2f;
+  --color-border: #424242;
+  --color-text-primary: #ececec;
+  --color-text-secondary: #b4b4b4;
+  --color-text-muted: #8e8e8e;
+  --color-primary: #303030;
+  --color-primary-hover: #424242;
+  --color-error: #f87171;
+  --color-success: #4ade80;
 
   /* Sidebar */
   --sidebar-width: 280px;
-  --sidebar-background: #f3f4f6;
+  --sidebar-background: #171717;
 
   /* Header */
   --header-height: 56px;
@@ -53,21 +53,4 @@
   /* Transitions */
   --transition-fast: 150ms ease;
   --transition-normal: 200ms ease;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: #0d1117;
-    --color-surface: #161b22;
-    --color-border: #30363d;
-    --color-text-primary: #e6edf3;
-    --color-text-secondary: #8b949e;
-    --color-text-muted: #6e7681;
-    --color-primary: #58a6ff;
-    --color-primary-hover: #79b8ff;
-    --color-error: #f85149;
-    --color-success: #3fb950;
-
-    --sidebar-background: #161b22;
-  }
 }

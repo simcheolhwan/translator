@@ -4,6 +4,7 @@
 
   "header.settings": "설정",
   "header.signOut": "로그아웃",
+  "header.signOutConfirm": "로그아웃 하시겠습니까?",
   "header.signIn": "Google로 로그인",
 
   "sidebar.newSession": "새 세션",
@@ -31,7 +32,7 @@
   "tone.formal": "격식체",
   "tone.domain": "분야",
   "tone.general": "일반",
-  "tone.technical": "기술 문서",
+  "tone.technical": "기술",
 
   "settings.title": "설정",
   "settings.globalInstruction": "전역 지시사항",

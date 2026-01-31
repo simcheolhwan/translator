@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { createFileRoute } from "@tanstack/react-router"
-import { Check, Loader2 } from "lucide-react"
+import { Check, Loader2, LogOut } from "lucide-react"
+import { useAuth } from "@/hooks/useAuth"
 import { useLocale } from "@/hooks/useLocale"
 import { useSettingsQuery, useUpdateSettingsMutation } from "@/queries/settings"
 import { SYSTEM_PROMPT } from "@/lib/systemPrompt"
@@ -11,6 +12,7 @@ export const Route = createFileRoute("/settings")({
 })
 
 function SettingsPage() {
+  const { logout } = useAuth()
   const { t } = useLocale()
   const { data: settings, isLoading } = useSettingsQuery()
   const updateMutation = useUpdateSettingsMutation()
@@ -31,6 +33,12 @@ function SettingsPage() {
   }
 
   const hasChanges = settings?.globalInstruction !== instruction
+
+  const handleSignOut = () => {
+    if (confirm(t("header.signOutConfirm"))) {
+      logout()
+    }
+  }
 
   return (
     <div className={styles.container}>
@@ -72,6 +80,13 @@ function SettingsPage() {
           value={SYSTEM_PROMPT}
           readOnly
         />
+      </div>
+
+      <div className={styles.dangerSection}>
+        <button className={styles.signOutButton} onClick={handleSignOut}>
+          <LogOut size={16} />
+          <span>{t("header.signOut")}</span>
+        </button>
       </div>
     </div>
   )

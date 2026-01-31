@@ -94,3 +94,28 @@
   color: var(--color-success);
   font-size: var(--text-sm);
 }
+
+.dangerSection {
+  margin-top: var(--space-10);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.signOutButton {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.signOutButton:hover {
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
