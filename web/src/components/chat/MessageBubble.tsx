@@ -16,8 +16,13 @@ export function MessageBubble({ message, onRetranslate }: MessageBubbleProps) {
 
   if (message.type === "source") {
     return (
-      <div className={clsx(styles.container, styles.source)}>
-        <div className={styles.content}>{message.content}</div>
+      <div className={styles.sourceWrapper}>
+        <div className={clsx(styles.container, styles.source)}>
+          <div className={styles.content}>{message.content}</div>
+        </div>
+        <div className={styles.actions}>
+          <CopyButton text={message.content} className={styles.actionButton} />
+        </div>
       </div>
     )
   }

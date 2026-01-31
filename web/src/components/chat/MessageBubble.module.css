@@ -23,6 +23,13 @@
   gap: var(--space-2);
 }
 
+.sourceWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
 .translationWrapper {
   display: flex;
   flex-direction: column;
