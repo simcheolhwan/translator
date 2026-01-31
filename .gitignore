@@ -1,28 +1,5 @@
 node_modules
 dist
 .env
-.env.local
-.env.*.local
-
-# IDE
-.idea
-*.swp
-*.swo
-.DS_Store
-
-# Firebase
-.firebase
-firebase-debug.log
-firestore-debug.log
-ui-debug.log
-
-# Logs
-*.log
-npm-debug.log*
-pnpm-debug.log*
-
-# Build
-*.tsbuildinfo
-
-# TanStack Router
+.firebaserc
 routeTree.gen.ts

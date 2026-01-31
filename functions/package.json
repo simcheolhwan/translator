@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "firebase emulators:start --only functions",
+    "dev": "tsc && firebase emulators:start --config ../firebase.json",
     "deploy": "firebase deploy --only functions",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
@@ -16,19 +16,19 @@
     "node": "22"
   },
   "dependencies": {
-    "cors": "latest",
-    "firebase-admin": "latest",
-    "firebase-functions": "latest",
-    "openai": "latest",
-    "zod": "latest"
+    "cors": "^2.8.6",
+    "firebase-admin": "^13.6.0",
+    "firebase-functions": "^7.0.5",
+    "openai": "^6.17.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
-    "@types/cors": "latest",
-    "@types/express": "latest",
-    "@types/node": "latest",
-    "eslint": "latest",
-    "typescript": "latest",
-    "typescript-eslint": "latest",
-    "vitest": "latest"
+    "@eslint/js": "^9.39.2",
+    "@types/cors": "^2.8.19",
+    "@types/node": "^25.1.0",
+    "eslint": "^9.39.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.54.0",
+    "vitest": "^4.0.18"
   }
 }

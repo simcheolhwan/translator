@@ -1,0 +1,18 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "users": {
+      "$uid": {
+        "sessions": {
+          ".indexOn": ["updatedAt"],
+          "$sessionId": {
+            "messages": {
+              ".indexOn": ["createdAt"]
+            }
+          }
+        }
+      }
+    }
+  }
+}

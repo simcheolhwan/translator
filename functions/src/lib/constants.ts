@@ -1,3 +1,6 @@
+// Cloud Functions region (Seoul)
+export const FUNCTION_REGION = "asia-northeast3"
+
 export const MODELS = ["gpt-5-nano", "gpt-5-mini", "gpt-5.2"] as const
 export type Model = (typeof MODELS)[number]
 export const DEFAULT_MODEL: Model = "gpt-5-nano"

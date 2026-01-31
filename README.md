@@ -22,7 +22,7 @@ A chat-based translation app for Korean and English powered by LLM.
 
 - Node.js 24 (frontend)
 - Node.js 22 (backend/Cloud Functions)
-- pnpm 9+
+- pnpm 10+
 - Firebase CLI (`npm install -g firebase-tools`)
 - Google Cloud CLI (for deployment)
 
@@ -46,24 +46,36 @@ firebase use --add
 ### 3. Environment Variables
 
 ```bash
-# Root level
-cp .env.example .env
+# Frontend
+cp web/.env.example web/.env
 # Fill in Firebase config (VITE_FIREBASE_*)
 
-# Functions
-cp functions/.env.example functions/.env.local
-# Add OPENAI_API_KEY and ALLOWED_EMAILS
+# Functions (create manually)
+# Add OPENAI_API_KEY and ALLOWED_EMAILS to functions/.env.local
 ```
 
 ### 4. Run Development
 
 ```bash
-# Terminal 1: Frontend
+# Terminal 1: Frontend dev server
 pnpm --filter web dev
 
-# Terminal 2: Backend (Functions emulator)
+# Terminal 2: Backend with Firebase emulators (Functions + Database + Auth)
 pnpm --filter functions dev
 ```
+
+The emulator UI is available at http://localhost:4000
+
+## Available Scripts
+
+| Script                          | Description                        |
+| ------------------------------- | ---------------------------------- |
+| `pnpm --filter web dev`         | Start frontend dev server          |
+| `pnpm --filter web build`       | Build frontend                     |
+| `pnpm --filter functions dev`   | Build and start Firebase emulators |
+| `pnpm --filter functions build` | Build Cloud Functions              |
+| `pnpm typecheck`                | Run TypeScript type checking       |
+| `pnpm lint`                     | Run ESLint on all packages         |
 
 ## OpenAI API Key Setup
 
@@ -84,46 +96,30 @@ firebase functions:secrets:set OPENAI_API_KEY
 # Enter your API key when prompted
 ```
 
-Access in code:
-
-```typescript
-import { defineSecret } from "firebase-functions/params"
-
-const openaiApiKey = defineSecret("OPENAI_API_KEY")
-
-export const translate = onRequest({ secrets: [openaiApiKey] }, async (req, res) => {
-  const client = new OpenAI({ apiKey: openaiApiKey.value() })
-  // ...
-})
-```
-
 ## Deployment
 
 ### Deploy Backend (Cloud Functions)
 
 ```bash
-# Build
 pnpm --filter functions build
-
-# Deploy
 firebase deploy --only functions
 ```
 
 ### Deploy Frontend
 
-Configure your preferred hosting (Firebase Hosting, Vercel, etc.) to serve from `web/dist`:
+Build and deploy to your preferred hosting (Firebase Hosting, Vercel, etc.):
 
 ```bash
-# Build frontend
 pnpm --filter web build
+# Output is in web/dist
 
-# Deploy (example with Firebase Hosting)
+# Example with Firebase Hosting
 firebase deploy --only hosting
 ```
 
 ## Access Control
 
-Only pre-approved email addresses can use the translation service. Configure the allowed list:
+Only pre-approved email addresses can use the translation service.
 
 ### Local Development
 
@@ -132,6 +128,8 @@ Edit `functions/.env.local`:
 ```
 ALLOWED_EMAILS=user1@example.com,user2@example.com
 ```
+
+Leave empty to allow all authenticated users (for development).
 
 ### Production
 
@@ -143,25 +141,31 @@ firebase functions:config:set app.allowed_emails="user1@example.com,user2@exampl
 
 ```
 translator/
-├── web/                  # Frontend (React)
+├── web/                  # Frontend (React 19)
 │   ├── src/
-│   │   ├── api/          # API client
+│   │   ├── api/          # API client (ky)
 │   │   ├── components/   # UI components
 │   │   ├── hooks/        # Custom hooks
 │   │   ├── lib/          # Utilities
 │   │   ├── queries/      # TanStack Query
 │   │   ├── routes/       # TanStack Router
+│   │   ├── schemas/      # Zod schemas
 │   │   ├── stores/       # Zustand stores
+│   │   ├── styles/       # Global styles
 │   │   └── types/        # TypeScript types
 │   └── public/
+│       └── locales/      # i18n (en.json, ko.json)
 ├── functions/            # Backend (Cloud Functions)
 │   └── src/
 │       ├── functions/    # Endpoint handlers
-│       ├── middleware/   # Auth, CORS
-│       ├── prompts/      # LLM prompts
-│       └── services/     # OpenAI, Firebase
-└── docs/
-    └── spec.md           # Product specification
+│       ├── middleware/   # Auth, CORS, email whitelist
+│       ├── prompts/      # LLM system prompts
+│       ├── services/     # OpenAI, Firebase, Database
+│       └── types/        # TypeScript types
+├── docs/
+│   └── spec.md           # Product specification
+├── firebase.json         # Firebase configuration
+└── pnpm-workspace.yaml   # Monorepo workspace
 ```
 
 ## License

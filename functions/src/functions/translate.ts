@@ -4,7 +4,13 @@ import { corsMiddleware } from "../middleware/cors.js"
 import { authMiddleware } from "../middleware/auth.js"
 import { allowedEmailsMiddleware } from "../middleware/allowedEmails.js"
 import { openaiApiKey } from "../lib/config.js"
-import { MODELS, TONE_SETTINGS, DEFAULT_MODEL, DEFAULT_TONE } from "../lib/constants.js"
+import {
+  FUNCTION_REGION,
+  MODELS,
+  TONE_SETTINGS,
+  DEFAULT_MODEL,
+  DEFAULT_TONE,
+} from "../lib/constants.js"
 import { translate } from "../services/openai.js"
 import {
   createSession,
@@ -31,7 +37,7 @@ const translateSchema = z.object({
 })
 
 export const translateFunction = onRequest(
-  { secrets: [openaiApiKey], cors: false },
+  { region: FUNCTION_REGION, secrets: [openaiApiKey], cors: false },
   async (req, res) => {
     // Initialize Firebase
     initializeFirebase()

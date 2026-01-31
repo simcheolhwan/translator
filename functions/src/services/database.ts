@@ -96,14 +96,17 @@ export async function addMessage(
     id: newMessageRef.key!,
   }
 
-  await newMessageRef.set({
+  const messageData: Record<string, unknown> = {
     type: fullMessage.type,
     content: fullMessage.content,
-    model: fullMessage.model,
-    tone: fullMessage.tone,
-    parentId: fullMessage.parentId,
     createdAt: fullMessage.createdAt,
-  })
+  }
+
+  if (fullMessage.model !== undefined) messageData.model = fullMessage.model
+  if (fullMessage.tone !== undefined) messageData.tone = fullMessage.tone
+  if (fullMessage.parentId !== undefined) messageData.parentId = fullMessage.parentId
+
+  await newMessageRef.set(messageData)
 
   await updateSessionTimestamp(userId, sessionId)
 
