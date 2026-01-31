@@ -5,6 +5,7 @@ const API_URL = import.meta.env.VITE_API_URL || ""
 
 export const api = ky.create({
   prefixUrl: API_URL,
+  timeout: 30 * 1000,
   hooks: {
     beforeRequest: [
       async (request) => {
