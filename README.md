@@ -45,13 +45,19 @@ firebase use --add
 
 ### 3. Environment Variables
 
+#### Frontend
+
 ```bash
-# Frontend
 cp web/.env.example web/.env
 # Fill in Firebase config (VITE_FIREBASE_*)
+```
 
-# Functions (create manually)
-# Add OPENAI_API_KEY and ALLOWED_EMAILS to functions/.env.local
+#### Functions (Local Development)
+
+```bash
+cp functions/.env.example functions/.env.local
+# Edit: OPENAI_API_KEY=sk-...
+# Edit: ALLOWED_EMAILS=your-email@gmail.com (leave empty to allow all)
 ```
 
 ### 4. Run Development
@@ -77,64 +83,48 @@ The emulator UI is available at http://localhost:4000
 | `pnpm typecheck`                | Run TypeScript type checking       |
 | `pnpm lint`                     | Run ESLint on all packages         |
 
-## OpenAI API Key Setup
-
-### Local Development
-
-Add to `functions/.env.local`:
-
-```
-OPENAI_API_KEY=sk-...
-```
-
-### Production
-
-Use Firebase secrets:
-
-```bash
-firebase functions:secrets:set OPENAI_API_KEY
-# Enter your API key when prompted
-```
-
 ## Deployment
 
-### Deploy Backend (Cloud Functions)
+### Initial Setup (One-time)
 
 ```bash
+# Set OpenAI API Key as secret
+firebase functions:secrets:set OPENAI_API_KEY
+```
+
+### Deploy
+
+```bash
+# Functions only
 pnpm --filter functions build
 firebase deploy --only functions
-```
 
-### Deploy Frontend
-
-Build and deploy to your preferred hosting (Firebase Hosting, Vercel, etc.):
-
-```bash
+# Hosting only
 pnpm --filter web build
-# Output is in web/dist
-
-# Example with Firebase Hosting
 firebase deploy --only hosting
+
+# Everything
+firebase deploy
 ```
 
-## Access Control
+### Access Control (ALLOWED_EMAILS)
 
-Only pre-approved email addresses can use the translation service.
+Configure allowed email addresses via `firebase.json`:
 
-### Local Development
-
-Edit `functions/.env.local`:
-
+```json
+{
+  "functions": {
+    "env": {
+      "ALLOWED_EMAILS": "user1@example.com,user2@example.com"
+    }
+  }
+}
 ```
-ALLOWED_EMAILS=user1@example.com,user2@example.com
-```
 
-Leave empty to allow all authenticated users (for development).
-
-### Production
+Or set during deployment:
 
 ```bash
-firebase functions:config:set app.allowed_emails="user1@example.com,user2@example.com"
+firebase deploy --only functions --set-env ALLOWED_EMAILS="user1@example.com,user2@example.com"
 ```
 
 ## Project Structure
