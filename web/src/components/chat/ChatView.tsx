@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef, useEffect, useState } from "react"
-import { Languages } from "lucide-react"
+import { Languages, AlertCircle, RotateCcw } from "lucide-react"
 import { useNavigate } from "@tanstack/react-router"
 import { useLocale } from "@/hooks/useLocale"
 import { useTranslate } from "@/hooks/useTranslate"
@@ -30,16 +30,17 @@ export function ChatView({ sessionId }: ChatViewProps) {
   const { data: session } = useSessionQuery(sessionId ?? "")
   const { showWarning } = useSessionWarning(sessionId)
 
-  const { translate, retranslate, model, setModel, tone, setTone, isTranslating } = useTranslate({
-    sessionId,
-    onSuccess: (newSessionId) => {
-      setPendingSource(null)
-      setPendingRetranslateId(null)
-      if (!sessionId) {
-        navigate({ to: "/session/$sessionId", params: { sessionId: newSessionId } })
-      }
-    },
-  })
+  const { translate, retranslate, model, setModel, tone, setTone, isTranslating, error, reset } =
+    useTranslate({
+      sessionId,
+      onSuccess: (newSessionId) => {
+        setPendingSource(null)
+        setPendingRetranslateId(null)
+        if (!sessionId) {
+          navigate({ to: "/session/$sessionId", params: { sessionId: newSessionId } })
+        }
+      },
+    })
 
   // Group messages by source and their translations
   const messagePairs = useMemo<MessagePair[]>(() => {
@@ -124,7 +125,24 @@ export function ChatView({ sessionId }: ChatViewProps) {
             {pendingSource && (
               <>
                 <MessageBubble message={pendingSource} />
-                <LoadingBubble />
+                {error ? (
+                  <div className={styles.error}>
+                    <AlertCircle size={16} />
+                    <span>{t("chat.failed")}</span>
+                    <button
+                      className={styles.retryButton}
+                      onClick={() => {
+                        reset()
+                        translate(pendingSource.content)
+                      }}
+                    >
+                      <RotateCcw size={14} />
+                      {t("chat.retry")}
+                    </button>
+                  </div>
+                ) : (
+                  <LoadingBubble />
+                )}
               </>
             )}
           </>

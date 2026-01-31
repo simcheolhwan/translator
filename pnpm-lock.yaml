@@ -20,9 +20,6 @@ importers:
 
   functions:
     dependencies:
-      cors:
-        specifier: ^2.8.6
-        version: 2.8.6
       firebase-admin:
         specifier: ^13.6.0
         version: 13.6.0
@@ -39,9 +36,6 @@ importers:
       '@eslint/js':
         specifier: ^9.39.2
         version: 9.39.2
-      '@types/cors':
-        specifier: ^2.8.19
-        version: 2.8.19
       '@types/node':
         specifier: ^25.1.0
         version: 25.1.0

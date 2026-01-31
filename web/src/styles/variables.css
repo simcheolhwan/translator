@@ -9,6 +9,7 @@
   --color-primary: #303030;
   --color-primary-hover: #424242;
   --color-error: #f87171;
+  --color-error-bg: rgba(248, 113, 113, 0.1);
   --color-success: #4ade80;
 
   /* Sidebar */
