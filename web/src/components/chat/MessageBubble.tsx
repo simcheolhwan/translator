@@ -1,4 +1,5 @@
 import { Minimize2 } from "lucide-react"
+import Markdown from "react-markdown"
 import { useLocale } from "@/hooks/useLocale"
 import { CopyButton } from "@/components/common/CopyButton"
 import type { Message } from "@/types/session"
@@ -24,7 +25,9 @@ export function MessageBubble({ message, onRetranslate }: MessageBubbleProps) {
   return (
     <div className={styles.translationWrapper}>
       <div className={clsx(styles.container, styles.translation)}>
-        <div className={styles.content}>{message.content}</div>
+        <div className={styles.content}>
+          <Markdown>{message.content}</Markdown>
+        </div>
       </div>
       <div className={styles.actions}>
         <CopyButton text={message.content} className={styles.actionButton} />

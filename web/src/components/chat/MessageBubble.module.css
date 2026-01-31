@@ -35,6 +35,18 @@
   line-height: 1.6;
 }
 
+.content p {
+  margin: 0;
+}
+
+.content p + p {
+  margin-top: var(--space-3);
+}
+
+.content strong {
+  font-weight: 600;
+}
+
 .actions {
   display: flex;
   gap: var(--space-2);
