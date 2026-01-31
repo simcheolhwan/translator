@@ -1,0 +1,20 @@
+{
+  "name": "translator",
+  "private": true,
+  "scripts": {
+    "typecheck": "pnpm -r typecheck",
+    "lint": "pnpm -r lint",
+    "prepare": "simple-git-hooks"
+  },
+  "devDependencies": {
+    "prettier": "latest",
+    "simple-git-hooks": "latest",
+    "lint-staged": "latest"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,json,css,md}": "prettier --write"
+  }
+}
