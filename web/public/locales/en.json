@@ -1,0 +1,49 @@
+{
+  "app.title": "Translator",
+  "app.description": "Korean-English Translation",
+
+  "header.settings": "Settings",
+  "header.signOut": "Sign out",
+  "header.signIn": "Sign in with Google",
+
+  "sidebar.newSession": "New Session",
+  "sidebar.sessions": "Sessions",
+  "sidebar.olderSessions": "Older Sessions",
+  "sidebar.noSessions": "No sessions yet",
+  "sidebar.deleteSession": "Delete session",
+  "sidebar.clearAll": "Clear all sessions",
+
+  "chat.placeholder": "Enter text to translate...",
+  "chat.send": "Translate",
+  "chat.copy": "Copy",
+  "chat.copied": "Copied!",
+  "chat.retranslate": "More concise",
+  "chat.retry": "Retry",
+  "chat.failed": "Translation failed",
+
+  "model.select": "Model",
+
+  "tone.style": "Style",
+  "tone.paraphrase": "Paraphrase",
+  "tone.literal": "Literal",
+  "tone.formality": "Formality",
+  "tone.casual": "Casual",
+  "tone.formal": "Formal",
+  "tone.domain": "Domain",
+  "tone.general": "General",
+  "tone.technical": "Technical",
+
+  "settings.title": "Settings",
+  "settings.globalInstruction": "Global Instruction",
+  "settings.globalInstructionHint": "This instruction is applied to all translations.",
+  "settings.systemPrompt": "System Instructions (Read-only)",
+  "settings.systemPromptHint": "These hardcoded instructions are always applied in addition to your custom instruction.",
+  "settings.save": "Save",
+  "settings.saved": "Saved!",
+
+  "warning.sessionTooLong": "This session is getting long. Consider starting a new session for better results.",
+  "warning.newSession": "Start new session",
+
+  "language.en": "English",
+  "language.ko": "Korean"
+}

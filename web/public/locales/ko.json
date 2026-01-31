@@ -1,0 +1,49 @@
+{
+  "app.title": "번역기",
+  "app.description": "한영 번역",
+
+  "header.settings": "설정",
+  "header.signOut": "로그아웃",
+  "header.signIn": "Google로 로그인",
+
+  "sidebar.newSession": "새 세션",
+  "sidebar.sessions": "세션",
+  "sidebar.olderSessions": "이전 세션",
+  "sidebar.noSessions": "세션이 없습니다",
+  "sidebar.deleteSession": "세션 삭제",
+  "sidebar.clearAll": "모든 세션 삭제",
+
+  "chat.placeholder": "번역할 텍스트를 입력하세요...",
+  "chat.send": "번역",
+  "chat.copy": "복사",
+  "chat.copied": "복사됨!",
+  "chat.retranslate": "더 간결하게",
+  "chat.retry": "재시도",
+  "chat.failed": "번역 실패",
+
+  "model.select": "모델",
+
+  "tone.style": "스타일",
+  "tone.paraphrase": "의역",
+  "tone.literal": "직역",
+  "tone.formality": "어조",
+  "tone.casual": "캐주얼",
+  "tone.formal": "격식체",
+  "tone.domain": "분야",
+  "tone.general": "일반",
+  "tone.technical": "기술 문서",
+
+  "settings.title": "설정",
+  "settings.globalInstruction": "전역 지시사항",
+  "settings.globalInstructionHint": "이 지시사항은 모든 번역에 적용됩니다.",
+  "settings.systemPrompt": "시스템 지시사항 (읽기 전용)",
+  "settings.systemPromptHint": "이 하드코딩된 지시사항은 사용자 지정 지시사항과 함께 항상 적용됩니다.",
+  "settings.save": "저장",
+  "settings.saved": "저장됨!",
+
+  "warning.sessionTooLong": "세션이 길어지고 있습니다. 더 나은 결과를 위해 새 세션을 시작하세요.",
+  "warning.newSession": "새 세션 시작",
+
+  "language.en": "English",
+  "language.ko": "한국어"
+}
