@@ -124,13 +124,17 @@ export const translateFunction = onRequest(
               .catch(console.error)
           }
 
-          // Save source message immediately (status: completed)
-          const sourceMessage = await addMessage(userId, sessionId, {
-            type: "source",
-            content: text,
-            status: "completed",
-            createdAt: Date.now(),
-          })
+          // Save source message only for new translations (not retranslate)
+          let sourceMessageId: string | undefined
+          if (!parentMessageId) {
+            const sourceMessage = await addMessage(userId, sessionId, {
+              type: "source",
+              content: text,
+              status: "completed",
+              createdAt: Date.now(),
+            })
+            sourceMessageId = sourceMessage.id
+          }
 
           // Save translation message immediately (status: pending)
           const translationMessage = await addMessage(userId, sessionId, {
@@ -146,7 +150,7 @@ export const translateFunction = onRequest(
           // Respond immediately with session and message IDs
           res.json({
             sessionId,
-            sourceMessageId: sourceMessage.id,
+            sourceMessageId,
             translationMessageId: translationMessage.id,
           })
 
