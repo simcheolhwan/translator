@@ -14,6 +14,7 @@ import { translate } from "../services/openai.js"
 import {
   createSession,
   addMessage,
+  updateMessage,
   getTranslationContext,
   getUserSettings,
 } from "../services/database.js"
@@ -75,47 +76,65 @@ export const translateFunction = onRequest(
             sessionId = session.id
           }
 
-          // Get translation context (previous translations in session)
-          const context = await getTranslationContext(userId, sessionId)
-
-          // Get user's global instruction
-          const settings = await getUserSettings(userId)
-          const userInstruction = settings?.globalInstruction
-
-          // Perform translation
-          const translatedText = await translate({
-            apiKey: openaiApiKey.value(),
-            text,
-            model,
-            tone,
-            context,
-            userInstruction,
-            concise,
-          })
-
-          // Save source message
+          // Save source message immediately (status: completed)
           const sourceMessage = await addMessage(userId, sessionId, {
             type: "source",
             content: text,
+            status: "completed",
             createdAt: Date.now(),
           })
 
-          // Save translation message
+          // Save translation message immediately (status: pending)
           const translationMessage = await addMessage(userId, sessionId, {
             type: "translation",
-            content: translatedText,
+            content: "",
+            status: "pending",
             model,
             tone,
             parentId: parentMessageId,
             createdAt: Date.now(),
           })
 
-          res.json({
-            sessionId,
-            sourceMessageId: sourceMessage.id,
-            translationMessageId: translationMessage.id,
-            translatedText,
-          })
+          try {
+            // Get translation context (previous translations in session)
+            const context = await getTranslationContext(userId, sessionId)
+
+            // Get user's global instruction
+            const settings = await getUserSettings(userId)
+            const userInstruction = settings?.globalInstruction
+
+            // Perform translation
+            const translatedText = await translate({
+              apiKey: openaiApiKey.value(),
+              text,
+              model,
+              tone,
+              context,
+              userInstruction,
+              concise,
+            })
+
+            // Update translation message to completed
+            await updateMessage(userId, sessionId, translationMessage.id, {
+              content: translatedText,
+              status: "completed",
+            })
+
+            res.json({
+              sessionId,
+              sourceMessageId: sourceMessage.id,
+              translationMessageId: translationMessage.id,
+              translatedText,
+            })
+          } catch (translationError) {
+            // Update translation message to error
+            await updateMessage(userId, sessionId, translationMessage.id, {
+              status: "error",
+              errorMessage:
+                translationError instanceof Error ? translationError.message : "Translation failed",
+            })
+            throw translationError
+          }
         } catch (error) {
           console.error("Translation error:", error)
           res.status(500).json({

@@ -1,5 +1,5 @@
 import { getFirebaseDatabase } from "./firebase.js"
-import type { Session, SessionWithMessages, Message } from "../types/session.js"
+import type { Session, SessionWithMessages, Message, MessageStatus } from "../types/session.js"
 
 // Session operations
 export async function createSession(userId: string, title: string): Promise<Session> {
@@ -105,12 +105,38 @@ export async function addMessage(
   if (fullMessage.model !== undefined) messageData.model = fullMessage.model
   if (fullMessage.tone !== undefined) messageData.tone = fullMessage.tone
   if (fullMessage.parentId !== undefined) messageData.parentId = fullMessage.parentId
+  if (fullMessage.status !== undefined) messageData.status = fullMessage.status
+  if (fullMessage.errorMessage !== undefined) messageData.errorMessage = fullMessage.errorMessage
 
   await newMessageRef.set(messageData)
 
   await updateSessionTimestamp(userId, sessionId)
 
   return fullMessage
+}
+
+export interface UpdateMessageData {
+  content?: string
+  status?: MessageStatus
+  errorMessage?: string
+}
+
+export async function updateMessage(
+  userId: string,
+  sessionId: string,
+  messageId: string,
+  data: UpdateMessageData,
+): Promise<void> {
+  const db = getFirebaseDatabase()
+  const messageRef = db.ref(`users/${userId}/sessions/${sessionId}/messages/${messageId}`)
+
+  const updates: Record<string, unknown> = {}
+  if (data.content !== undefined) updates.content = data.content
+  if (data.status !== undefined) updates.status = data.status
+  if (data.errorMessage !== undefined) updates.errorMessage = data.errorMessage
+
+  await messageRef.update(updates)
+  await updateSessionTimestamp(userId, sessionId)
 }
 
 export async function getTranslationContext(userId: string, sessionId: string): Promise<string[]> {

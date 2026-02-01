@@ -1,4 +1,4 @@
-import { Minimize2 } from "lucide-react"
+import { Minimize2, AlertCircle } from "lucide-react"
 import Markdown from "react-markdown"
 import { useLocale } from "@/hooks/useLocale"
 import { CopyButton } from "@/components/common/CopyButton"
@@ -27,6 +27,26 @@ export function MessageBubble({ message, onRetranslate }: MessageBubbleProps) {
     )
   }
 
+  // Pending state: show loading indicator
+  if (message.status === "pending") {
+    return <LoadingBubble />
+  }
+
+  // Error state: show error message
+  if (message.status === "error") {
+    return (
+      <div className={styles.translationWrapper}>
+        <div className={clsx(styles.container, styles.translation, styles.error)}>
+          <div className={styles.errorContent}>
+            <AlertCircle size={16} />
+            <span>{message.errorMessage ?? t("chat.failed")}</span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // Completed state: show translation content
   return (
     <div className={styles.translationWrapper}>
       <div className={clsx(styles.container, styles.translation)}>
@@ -53,16 +73,10 @@ export function MessageBubble({ message, onRetranslate }: MessageBubbleProps) {
 interface MessageGroupProps {
   sourceMessage: Message
   translations: Message[]
-  isRetranslating?: boolean
   onRetranslate?: (text: string, parentId: string) => void
 }
 
-export function MessageGroup({
-  sourceMessage,
-  translations,
-  isRetranslating,
-  onRetranslate,
-}: MessageGroupProps) {
+export function MessageGroup({ sourceMessage, translations, onRetranslate }: MessageGroupProps) {
   return (
     <>
       <MessageBubble message={sourceMessage} />
@@ -70,7 +84,6 @@ export function MessageGroup({
         {translations.map((translation) => (
           <MessageBubble key={translation.id} message={translation} onRetranslate={onRetranslate} />
         ))}
-        {isRetranslating && <LoadingBubble />}
       </div>
     </>
   )
