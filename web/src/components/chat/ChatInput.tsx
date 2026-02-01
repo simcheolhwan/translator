@@ -1,5 +1,6 @@
-import { useState, useCallback, useRef, type FormEvent, type KeyboardEvent } from "react"
-import { Send, Loader2, ClipboardPaste } from "lucide-react"
+import { useCallback, useRef, type FormEvent, type KeyboardEvent, useState } from "react"
+import { Popover } from "@base-ui/react/popover"
+import { Send, Loader2, ClipboardPaste, Settings } from "lucide-react"
 import { useLocale } from "@/hooks/useLocale"
 import { ModelSelector } from "@/components/common/ModelSelector"
 import { ToneSettings } from "@/components/common/ToneSettings"
@@ -93,10 +94,25 @@ export function ChatInput({
       />
 
       <div className={styles.toolbar}>
-        <div className={styles.settings}>
+        <div className={styles.settingsDesktop}>
           <ModelSelector value={model} onChange={onModelChange} />
           <ToneSettings value={tone} onChange={onToneChange} />
         </div>
+
+        <Popover.Root>
+          <Popover.Trigger className={styles.settingsToggle}>
+            <Settings size={16} />
+          </Popover.Trigger>
+          <Popover.Portal>
+            <Popover.Positioner sideOffset={8}>
+              <Popover.Popup className={styles.popover}>
+                <ModelSelector value={model} onChange={onModelChange} />
+                <ToneSettings value={tone} onChange={onToneChange} />
+              </Popover.Popup>
+            </Popover.Positioner>
+          </Popover.Portal>
+        </Popover.Root>
+
         <div className={styles.actions}>
           <button
             type="button"

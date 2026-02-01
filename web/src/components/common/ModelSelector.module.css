@@ -29,3 +29,21 @@
   outline: none;
   border-color: var(--color-primary);
 }
+
+@media (max-width: 768px) {
+  .container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .label {
+    min-width: 70px;
+    font-size: var(--text-sm);
+  }
+
+  .select {
+    flex: 1;
+  }
+}

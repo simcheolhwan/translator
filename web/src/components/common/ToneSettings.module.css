@@ -50,3 +50,26 @@
 .optionActive:hover {
   background-color: var(--color-primary-hover);
 }
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .label {
+    min-width: 70px;
+    font-size: var(--text-sm);
+  }
+
+  .options {
+    flex: 1;
+  }
+}
