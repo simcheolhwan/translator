@@ -110,9 +110,9 @@ export function ChatInput({
             type="submit"
             className={styles.submitButton}
             disabled={!text.trim() || isLoading}
+            title={t("chat.send")}
           >
             {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
-            <span>{t("chat.send")}</span>
           </button>
         </div>
       </div>
