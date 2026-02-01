@@ -90,14 +90,12 @@ export function ChatView({ sessionId }: ChatViewProps) {
     <div className={styles.container}>
       <SessionWarning show={showWarning} />
 
-      {session && (session.username || session.description) && (
-        <div className={styles.sessionHeader}>
-          {session.username && <span className={styles.username}>{session.username}</span>}
-          {session.description && (
-            <span className={styles.sessionDescription}>{session.description}</span>
-          )}
-        </div>
-      )}
+      <div className={styles.sessionHeader}>
+        {session?.username && <span className={styles.username}>{session.username}</span>}
+        {session?.description && (
+          <span className={styles.sessionDescription}>{session.description}</span>
+        )}
+      </div>
 
       <div className={styles.messages}>
         {isEmpty ? (

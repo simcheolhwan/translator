@@ -1,9 +1,10 @@
+/* Area 3: Input (fixed) */
 .form {
+  flex: 0 0 auto;
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
   padding: var(--space-4) 0;
-  border-top: 1px solid var(--border-subtle);
   background-color: var(--bg-base);
 }
 
