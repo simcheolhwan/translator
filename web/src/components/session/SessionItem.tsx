@@ -2,6 +2,7 @@ import { memo, type MouseEvent } from "react"
 import { Trash2 } from "lucide-react"
 import { Link, useParams } from "@tanstack/react-router"
 import { formatDistanceToNow } from "date-fns"
+import { enUS, ko } from "date-fns/locale"
 import { useLocale } from "@/hooks/useLocale"
 import type { SessionListItem } from "@/types/session"
 import styles from "./SessionItem.module.css"
@@ -12,7 +13,8 @@ interface SessionItemProps {
 }
 
 export const SessionItem = memo(function SessionItem({ session, onDelete }: SessionItemProps) {
-  const { t } = useLocale()
+  const { locale, t } = useLocale()
+  const dateLocale = locale === "ko" ? ko : enUS
   const params = useParams({ strict: false })
   const isActive = params.sessionId === session.id
 
@@ -37,7 +39,7 @@ export const SessionItem = memo(function SessionItem({ session, onDelete }: Sess
           <span className={styles.description}>{session.description}</span>
         </div>
         <div className={styles.date}>
-          {formatDistanceToNow(session.updatedAt, { addSuffix: true })}
+          {formatDistanceToNow(session.updatedAt, { addSuffix: true, locale: dateLocale })}
         </div>
       </div>
       <button
