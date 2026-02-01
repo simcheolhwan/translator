@@ -6,7 +6,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
-    "dev": "tsc && firebase emulators:start --config ../firebase.json",
+    "dev": "tsc --watch --preserveWatchOutput & firebase emulators:start --config ../firebase.json",
     "deploy": "firebase deploy --only functions",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
