@@ -9,8 +9,7 @@ export function Sidebar() {
   const { t } = useLocale()
   const navigate = useNavigate()
 
-  const { recentSessions, olderSessions, isLoading, deleteSession, clearAll, isClearing } =
-    useSessions()
+  const { sessions, deleteSession, clearAll, isClearing } = useSessions()
 
   const handleNewSession = () => {
     navigate({ to: "/" })
@@ -23,8 +22,6 @@ export function Sidebar() {
     }
   }
 
-  const hasAnySessions = recentSessions.length > 0 || olderSessions.length > 0
-
   return (
     <aside className={styles.sidebar}>
       <div className={styles.header}>
@@ -35,15 +32,10 @@ export function Sidebar() {
       </div>
 
       <div className={styles.content}>
-        <SessionList
-          recentSessions={recentSessions}
-          olderSessions={olderSessions}
-          isLoading={isLoading}
-          onDelete={deleteSession}
-        />
+        <SessionList sessions={sessions} onDelete={deleteSession} />
       </div>
 
-      {hasAnySessions && (
+      {sessions.length > 0 && (
         <div className={styles.footer}>
           <button className={styles.clearButton} onClick={handleClearAll} disabled={isClearing}>
             <Trash2 size={16} />

@@ -9,7 +9,6 @@
 
   "sidebar.newSession": "새 세션",
   "sidebar.sessions": "세션",
-  "sidebar.olderSessions": "이전 세션",
   "sidebar.noSessions": "세션이 없습니다",
   "sidebar.deleteSession": "세션 삭제",
   "sidebar.clearAll": "모든 세션 삭제",

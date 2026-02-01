@@ -9,7 +9,6 @@
 
   "sidebar.newSession": "New Session",
   "sidebar.sessions": "Sessions",
-  "sidebar.olderSessions": "Older Sessions",
   "sidebar.noSessions": "No sessions yet",
   "sidebar.deleteSession": "Delete session",
   "sidebar.clearAll": "Clear all sessions",
