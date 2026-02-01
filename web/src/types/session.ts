@@ -16,7 +16,8 @@ export interface Message {
 
 export interface Session {
   id: string
-  title: string
+  username?: string
+  description: string
   messages: Message[]
   createdAt: number
   updatedAt: number
@@ -24,7 +25,8 @@ export interface Session {
 
 export interface SessionListItem {
   id: string
-  title: string
+  username?: string
+  description: string
   createdAt: number
   updatedAt: number
 }

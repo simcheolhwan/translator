@@ -1,9 +1,9 @@
 import { useMemo } from "react"
-import { useSessionQuery } from "@/queries/sessions"
+import { useRealtimeSession } from "./useRealtimeSession"
 import { SESSION_WARNING_THRESHOLD, SESSION_MAX_CONTEXT_SIZE } from "@/lib/constants"
 
 export function useSessionWarning(sessionId: string | undefined) {
-  const { data: session } = useSessionQuery(sessionId ?? "")
+  const { session } = useRealtimeSession(sessionId)
 
   const { totalSize, percentage, showWarning } = useMemo(() => {
     if (!session?.messages) {

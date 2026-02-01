@@ -2,7 +2,12 @@ import { getFirebaseDatabase } from "./firebase.js"
 import type { Session, SessionWithMessages, Message, MessageStatus } from "../types/session.js"
 
 // Session operations
-export async function createSession(userId: string, title: string): Promise<Session> {
+export interface SessionMetadata {
+  username?: string
+  description: string
+}
+
+export async function createSession(userId: string, metadata: SessionMetadata): Promise<Session> {
   const db = getFirebaseDatabase()
   const sessionsRef = db.ref(`users/${userId}/sessions`)
   const newSessionRef = sessionsRef.push()
@@ -10,16 +15,23 @@ export async function createSession(userId: string, title: string): Promise<Sess
   const now = Date.now()
   const session: Session = {
     id: newSessionRef.key!,
-    title,
+    username: metadata.username,
+    description: metadata.description,
     createdAt: now,
     updatedAt: now,
   }
 
-  await newSessionRef.set({
-    title: session.title,
+  const sessionData: Record<string, unknown> = {
+    description: session.description,
     createdAt: session.createdAt,
     updatedAt: session.updatedAt,
-  })
+  }
+
+  if (session.username) {
+    sessionData.username = session.username
+  }
+
+  await newSessionRef.set(sessionData)
 
   return session
 }
@@ -37,7 +49,8 @@ export async function getSession(
   const data = snapshot.val()
   return {
     id: sessionId,
-    title: data.title,
+    username: data.username,
+    description: data.description || "",
     createdAt: data.createdAt,
     updatedAt: data.updatedAt,
     messages: data.messages || {},
@@ -56,7 +69,8 @@ export async function listSessions(userId: string): Promise<Session[]> {
     const data = child.val()
     sessions.push({
       id: child.key!,
-      title: data.title,
+      username: data.username,
+      description: data.description || "",
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,
     })
@@ -79,6 +93,21 @@ export async function clearAllSessions(userId: string): Promise<void> {
 export async function updateSessionTimestamp(userId: string, sessionId: string): Promise<void> {
   const db = getFirebaseDatabase()
   await db.ref(`users/${userId}/sessions/${sessionId}/updatedAt`).set(Date.now())
+}
+
+export async function updateSessionMetadata(
+  userId: string,
+  sessionId: string,
+  metadata: Partial<SessionMetadata>,
+): Promise<void> {
+  const db = getFirebaseDatabase()
+  const sessionRef = db.ref(`users/${userId}/sessions/${sessionId}`)
+
+  const updates: Record<string, unknown> = {}
+  if (metadata.description !== undefined) updates.description = metadata.description
+  if (metadata.username !== undefined) updates.username = metadata.username
+
+  await sessionRef.update(updates)
 }
 
 // Message operations

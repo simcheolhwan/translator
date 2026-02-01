@@ -16,7 +16,8 @@ export interface Message {
 
 export interface Session {
   id: string
-  title: string
+  username?: string
+  description: string
   createdAt: number
   updatedAt: number
 }

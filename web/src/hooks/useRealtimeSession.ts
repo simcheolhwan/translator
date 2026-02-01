@@ -5,7 +5,8 @@ import { useAuth } from "./useAuth"
 import type { Session, Message } from "@/types/session"
 
 interface SessionData {
-  title: string
+  username?: string
+  description?: string
   createdAt: number
   updatedAt: number
   messages?: Record<string, Omit<Message, "id">>
@@ -54,7 +55,8 @@ function createSessionStore(userId: string | undefined, sessionId: string | unde
         state = {
           session: {
             id: sessionId,
-            title: data.title,
+            username: data.username,
+            description: data.description || "",
             messages,
             createdAt: data.createdAt,
             updatedAt: data.updatedAt,

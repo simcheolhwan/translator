@@ -1,9 +1,6 @@
 import { useMemo } from "react"
-import {
-  useSessionsQuery,
-  useDeleteSessionMutation,
-  useClearAllSessionsMutation,
-} from "@/queries/sessions"
+import { useDeleteSessionMutation, useClearAllSessionsMutation } from "@/queries/sessions"
+import { useRealtimeSessions } from "./useRealtimeSessions"
 import type { SessionListItem } from "@/types/session"
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000
@@ -14,18 +11,18 @@ interface GroupedSessions {
 }
 
 export function useSessions() {
-  const query = useSessionsQuery()
+  const { sessions, loading, error } = useRealtimeSessions()
   const deleteMutation = useDeleteSessionMutation()
   const clearAllMutation = useClearAllSessionsMutation()
 
   const grouped = useMemo<GroupedSessions>(() => {
-    if (!query.data) return { recent: [], older: [] }
+    if (!sessions.length) return { recent: [], older: [] }
 
     const now = Date.now()
     const recent: SessionListItem[] = []
     const older: SessionListItem[] = []
 
-    for (const session of query.data) {
+    for (const session of sessions) {
       if (now - session.updatedAt < ONE_DAY_MS) {
         recent.push(session)
       } else {
@@ -34,18 +31,17 @@ export function useSessions() {
     }
 
     return { recent, older }
-  }, [query.data])
+  }, [sessions])
 
   return {
-    sessions: query.data ?? [],
+    sessions,
     recentSessions: grouped.recent,
     olderSessions: grouped.older,
-    isLoading: query.isLoading,
-    error: query.error,
+    isLoading: loading,
+    error,
     deleteSession: deleteMutation.mutate,
     isDeleting: deleteMutation.isPending,
     clearAll: clearAllMutation.mutate,
     isClearing: clearAllMutation.isPending,
-    refetch: query.refetch,
   }
 }

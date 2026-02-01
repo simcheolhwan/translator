@@ -7,6 +7,23 @@
   width: 100%;
 }
 
+.sessionHeader {
+  flex-shrink: 0;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--text-sm);
+}
+
+.sessionUsername {
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-right: var(--space-2);
+}
+
+.sessionDescription {
+  color: var(--color-text-secondary);
+}
+
 .messages {
   flex: 1;
   overflow-y: auto;

@@ -9,17 +9,60 @@ import {
   TONE_SETTINGS,
   DEFAULT_MODEL,
   DEFAULT_TONE,
+  type Model,
+  type ToneSettings,
 } from "../lib/constants.js"
-import { translate } from "../services/openai.js"
+import { translate, generateSessionMetadata } from "../services/openai.js"
 import {
   createSession,
   addMessage,
   updateMessage,
+  updateSessionMetadata,
   getTranslationContext,
   getUserSettings,
 } from "../services/database.js"
 import { initializeFirebase } from "../services/firebase.js"
 import type { AuthenticatedRequest } from "../types/request.js"
+
+interface TranslateInBackgroundParams {
+  apiKey: string
+  userId: string
+  sessionId: string
+  messageId: string
+  text: string
+  model: Model
+  tone: ToneSettings
+  concise?: boolean
+}
+
+async function translateInBackground(params: TranslateInBackgroundParams): Promise<void> {
+  const { apiKey, userId, sessionId, messageId, text, model, tone, concise } = params
+
+  try {
+    const context = await getTranslationContext(userId, sessionId)
+    const settings = await getUserSettings(userId)
+
+    const translatedText = await translate({
+      apiKey,
+      text,
+      model,
+      tone,
+      context,
+      userInstruction: settings?.globalInstruction,
+      concise,
+    })
+
+    await updateMessage(userId, sessionId, messageId, {
+      content: translatedText,
+      status: "completed",
+    })
+  } catch (error) {
+    await updateMessage(userId, sessionId, messageId, {
+      status: "error",
+      errorMessage: error instanceof Error ? error.message : "Translation failed",
+    })
+  }
+}
 
 const translateSchema = z.object({
   sessionId: z.string().optional(),
@@ -71,9 +114,14 @@ export const translateFunction = onRequest(
 
           // Create new session if not provided
           if (!sessionId) {
-            const title = text.slice(0, 50) + (text.length > 50 ? "..." : "")
-            const session = await createSession(userId, title)
+            // Create session immediately with empty description
+            const session = await createSession(userId, { description: "" })
             sessionId = session.id
+
+            // Generate metadata in background and update session (no await)
+            generateSessionMetadata(openaiApiKey.value(), text, model)
+              .then((metadata) => updateSessionMetadata(userId, sessionId!, metadata))
+              .catch(console.error)
           }
 
           // Save source message immediately (status: completed)
@@ -95,46 +143,24 @@ export const translateFunction = onRequest(
             createdAt: Date.now(),
           })
 
-          try {
-            // Get translation context (previous translations in session)
-            const context = await getTranslationContext(userId, sessionId)
+          // Respond immediately with session and message IDs
+          res.json({
+            sessionId,
+            sourceMessageId: sourceMessage.id,
+            translationMessageId: translationMessage.id,
+          })
 
-            // Get user's global instruction
-            const settings = await getUserSettings(userId)
-            const userInstruction = settings?.globalInstruction
-
-            // Perform translation
-            const translatedText = await translate({
-              apiKey: openaiApiKey.value(),
-              text,
-              model,
-              tone,
-              context,
-              userInstruction,
-              concise,
-            })
-
-            // Update translation message to completed
-            await updateMessage(userId, sessionId, translationMessage.id, {
-              content: translatedText,
-              status: "completed",
-            })
-
-            res.json({
-              sessionId,
-              sourceMessageId: sourceMessage.id,
-              translationMessageId: translationMessage.id,
-              translatedText,
-            })
-          } catch (translationError) {
-            // Update translation message to error
-            await updateMessage(userId, sessionId, translationMessage.id, {
-              status: "error",
-              errorMessage:
-                translationError instanceof Error ? translationError.message : "Translation failed",
-            })
-            throw translationError
-          }
+          // Perform translation in background (no await)
+          translateInBackground({
+            apiKey: openaiApiKey.value(),
+            userId,
+            sessionId,
+            messageId: translationMessage.id,
+            text,
+            model,
+            tone,
+            concise,
+          }).catch(console.error)
         } catch (error) {
           console.error("Translation error:", error)
           res.status(500).json({

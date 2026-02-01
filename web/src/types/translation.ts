@@ -13,5 +13,4 @@ export interface TranslateResponse {
   sessionId: string
   sourceMessageId: string
   translationMessageId: string
-  translatedText: string
 }

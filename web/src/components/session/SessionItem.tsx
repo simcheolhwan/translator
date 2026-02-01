@@ -32,7 +32,10 @@ export const SessionItem = memo(function SessionItem({ session, onDelete }: Sess
       className={clsx(styles.item, isActive && styles.itemActive)}
     >
       <div className={styles.content}>
-        <div className={styles.title}>{session.title}</div>
+        <div className={styles.title}>
+          {session.username && <span className={styles.username}>{session.username}</span>}
+          <span>{session.description}</span>
+        </div>
         <div className={styles.date}>
           {formatDistanceToNow(session.updatedAt, { addSuffix: true })}
         </div>
