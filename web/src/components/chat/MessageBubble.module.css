@@ -73,12 +73,6 @@
 .actions {
   display: flex;
   align-items: center;
-  margin-left: calc(-1 * var(--space-2));
-}
-
-.sourceContainer .actions {
-  margin-left: 0;
-  margin-right: calc(-1 * var(--space-2));
 }
 
 /* Error message */
