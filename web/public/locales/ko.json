@@ -18,6 +18,7 @@
   "chat.send": "번역",
   "chat.copy": "복사",
   "chat.copied": "복사됨!",
+  "chat.paste": "클립보드에서 붙여넣기",
   "chat.retranslate": "더 간결하게",
   "chat.retry": "재시도",
   "chat.failed": "번역 실패",

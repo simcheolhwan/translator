@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, type FormEvent, type KeyboardEvent } from "react"
-import { Send, Loader2 } from "lucide-react"
+import { Send, Loader2, ClipboardPaste } from "lucide-react"
 import { useLocale } from "@/hooks/useLocale"
 import { ModelSelector } from "@/components/common/ModelSelector"
 import { ToneSettings } from "@/components/common/ToneSettings"
@@ -68,6 +68,17 @@ export function ChatInput({
     isComposingRef.current = false
   }, [])
 
+  const handlePaste = useCallback(async () => {
+    try {
+      const clipboardText = await navigator.clipboard.readText()
+      if (clipboardText) {
+        setText((prev) => prev + clipboardText)
+      }
+    } catch {
+      // Clipboard access denied
+    }
+  }, [])
+
   return (
     <form className={styles.container} onSubmit={handleSubmit}>
       <textarea
@@ -78,7 +89,6 @@ export function ChatInput({
         onCompositionStart={handleCompositionStart}
         onCompositionEnd={handleCompositionEnd}
         placeholder={t("chat.placeholder")}
-        disabled={isLoading}
         autoFocus={autoFocus}
       />
 
@@ -87,10 +97,24 @@ export function ChatInput({
           <ModelSelector value={model} onChange={onModelChange} />
           <ToneSettings value={tone} onChange={onToneChange} />
         </div>
-        <button type="submit" className={styles.submitButton} disabled={!text.trim() || isLoading}>
-          {isLoading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
-          <span>{t("chat.send")}</span>
-        </button>
+        <div className={styles.actions}>
+          <button
+            type="button"
+            className={styles.pasteButton}
+            onClick={handlePaste}
+            title={t("chat.paste")}
+          >
+            <ClipboardPaste size={16} />
+          </button>
+          <button
+            type="submit"
+            className={styles.submitButton}
+            disabled={!text.trim() || isLoading}
+          >
+            {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+            <span>{t("chat.send")}</span>
+          </button>
+        </div>
       </div>
     </form>
   )

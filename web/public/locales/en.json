@@ -18,6 +18,7 @@
   "chat.send": "Translate",
   "chat.copy": "Copy",
   "chat.copied": "Copied!",
+  "chat.paste": "Paste from clipboard",
   "chat.retranslate": "More concise",
   "chat.retry": "Retry",
   "chat.failed": "Translation failed",
