@@ -1,4 +1,5 @@
 import type { ReactNode } from "react"
+import clsx from "clsx"
 import { useAuth } from "@/hooks/useAuth"
 import { useLocale } from "@/hooks/useLocale"
 import { Header } from "./Header"
@@ -13,24 +14,23 @@ export function MainLayout({ children }: MainLayoutProps) {
   const { isAuthenticated, loading, login } = useAuth()
   const { t, loaded } = useLocale()
 
-  // Wait for locale to load
   if (!loaded) {
     return null
   }
 
   return (
-    <div className={styles.layout}>
+    <div className={styles.container}>
       <Header />
       <div className={styles.body}>
         {isAuthenticated && <Sidebar />}
-        <main className={styles.main}>
+        <main className={clsx(styles.main, isAuthenticated && styles.mainWithSidebar)}>
           {loading ? null : isAuthenticated ? (
             children
           ) : (
-            <div className={styles.loginPrompt}>
-              <h2>{t("app.title")}</h2>
-              <p>{t("app.description")}</p>
-              <button className={styles.signInButton} onClick={login}>
+            <div className={styles.loginScreen}>
+              <h2 className={styles.loginTitle}>{t("app.title")}</h2>
+              <p className={styles.loginDescription}>{t("app.description")}</p>
+              <button className={styles.loginButton} onClick={login}>
                 {t("header.signIn")}
               </button>
             </div>

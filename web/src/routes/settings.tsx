@@ -60,7 +60,7 @@ function SettingsPage() {
             onClick={handleSave}
             disabled={!hasChanges || updateMutation.isPending}
           >
-            {updateMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : null}
+            {updateMutation.isPending ? <Loader2 size={16} className={styles.spinner} /> : null}
             <span>{t("settings.save")}</span>
           </button>
           {saved && (

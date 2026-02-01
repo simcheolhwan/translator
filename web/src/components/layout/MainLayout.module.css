@@ -1,57 +1,84 @@
-.layout {
+.container {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .body {
   display: flex;
   flex: 1;
-  overflow: hidden;
+  padding-top: var(--header-height);
 }
 
 .main {
   flex: 1;
-  overflow-y: auto;
-  background-color: var(--color-background);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
-.loginPrompt {
+.mainWithSidebar {
+  margin-left: var(--sidebar-width);
+}
+
+@media (max-width: 768px) {
+  .mainWithSidebar {
+    margin-left: 0;
+  }
+}
+
+/* Login screen */
+.loginScreen {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  gap: var(--space-4);
+  gap: var(--space-6);
   padding: var(--space-8);
   text-align: center;
 }
 
-.loginPrompt h2 {
-  font-size: var(--text-xl);
-  color: var(--color-text-primary);
+.loginTitle {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
 }
 
-.loginPrompt p {
-  color: var(--color-text-secondary);
+.loginDescription {
+  font-size: var(--text-base);
+  color: var(--text-secondary);
   max-width: 400px;
 }
 
-.signInButton {
-  display: flex;
+.loginButton {
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-2);
   padding: var(--space-3) var(--space-6);
-  background-color: var(--color-primary);
-  border: none;
+  background-color: var(--text-primary);
+  color: var(--bg-base);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
   border-radius: var(--radius-md);
-  font-size: var(--text-base);
-  font-weight: 500;
-  color: white;
-  cursor: pointer;
-  transition: background-color var(--transition-fast);
+  transition:
+    background-color var(--transition-fast),
+    transform var(--transition-fast);
 }
 
-.signInButton:hover {
-  background-color: var(--color-primary-hover);
+.loginButton:hover {
+  background-color: var(--color-gray-200);
+}
+
+.loginButton:active {
+  transform: scale(0.98);
+}
+
+@media (max-width: 768px) {
+  .body {
+    padding-top: var(--header-height);
+  }
 }

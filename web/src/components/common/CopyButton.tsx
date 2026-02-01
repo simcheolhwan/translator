@@ -1,15 +1,13 @@
 import { useState, useCallback } from "react"
 import { Copy, Check } from "lucide-react"
 import { useLocale } from "@/hooks/useLocale"
-import clsx from "clsx"
 import styles from "./CopyButton.module.css"
 
 interface CopyButtonProps {
   text: string
-  className?: string
 }
 
-export function CopyButton({ text, className }: CopyButtonProps) {
+export function CopyButton({ text }: CopyButtonProps) {
   const { t } = useLocale()
   const [copied, setCopied] = useState(false)
 
@@ -21,9 +19,10 @@ export function CopyButton({ text, className }: CopyButtonProps) {
 
   return (
     <button
-      className={clsx(styles.button, copied && styles.copied, className)}
+      className={styles.button}
       onClick={handleCopy}
       aria-label={t("chat.copy")}
+      data-copied={copied}
     >
       {copied ? <Check size={12} /> : <Copy size={12} />}
       <span>{copied ? t("chat.copied") : t("chat.copy")}</span>

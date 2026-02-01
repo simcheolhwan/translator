@@ -17,7 +17,7 @@ export const SessionList = memo(function SessionList({ sessions, onDelete }: Ses
   }
 
   return (
-    <div className={styles.container}>
+    <div className={styles.list}>
       {sessions.map((session) => (
         <SessionItem key={session.id} session={session} onDelete={onDelete} />
       ))}

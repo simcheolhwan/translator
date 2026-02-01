@@ -19,9 +19,9 @@ export function SessionWarning({ show }: SessionWarningProps) {
 
   return (
     <div className={styles.warning}>
-      <div className={styles.message}>
-        <AlertTriangle size={16} />
-        <span>{t("warning.sessionTooLong")}</span>
+      <div className={styles.content}>
+        <AlertTriangle size={16} className={styles.icon} />
+        <span className={styles.text}>{t("warning.sessionTooLong")}</span>
       </div>
       <button className={styles.button} onClick={handleNewSession}>
         {t("warning.newSession")}

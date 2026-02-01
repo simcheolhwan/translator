@@ -4,7 +4,6 @@ import { Link, useParams } from "@tanstack/react-router"
 import { formatDistanceToNow } from "date-fns"
 import { useLocale } from "@/hooks/useLocale"
 import type { SessionListItem } from "@/types/session"
-import clsx from "clsx"
 import styles from "./SessionItem.module.css"
 
 interface SessionItemProps {
@@ -29,12 +28,13 @@ export const SessionItem = memo(function SessionItem({ session, onDelete }: Sess
     <Link
       to="/session/$sessionId"
       params={{ sessionId: session.id }}
-      className={clsx(styles.item, isActive && styles.itemActive)}
+      className={styles.item}
+      data-active={isActive}
     >
       <div className={styles.content}>
-        <div className={styles.title}>
+        <div className={styles.info}>
           {session.username && <span className={styles.username}>{session.username}</span>}
-          <span>{session.description}</span>
+          <span className={styles.description}>{session.description}</span>
         </div>
         <div className={styles.date}>
           {formatDistanceToNow(session.updatedAt, { addSuffix: true })}

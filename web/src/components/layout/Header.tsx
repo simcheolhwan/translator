@@ -16,16 +16,14 @@ export function Header() {
 
   return (
     <header className={styles.header}>
-      <div className={styles.left}>
-        <Link to="/" className={styles.logo}>
-          <Languages size={24} />
-          <span>{t("app.title")}</span>
-        </Link>
-      </div>
+      <Link to="/" className={styles.logo}>
+        <Languages size={24} className={styles.logoIcon} />
+        <span className={styles.logoText}>{t("app.title")}</span>
+      </Link>
 
-      <div className={styles.right}>
+      <div className={styles.actions}>
         <button
-          className={styles.languageToggle}
+          className={styles.languageButton}
           onClick={handleLanguageToggle}
           aria-label="Toggle language"
         >
@@ -34,7 +32,7 @@ export function Header() {
         </button>
 
         {isAuthenticated && (
-          <Link to="/settings" className={styles.menuButton} aria-label={t("header.settings")}>
+          <Link to="/settings" className={styles.settingsButton} aria-label={t("header.settings")}>
             <Settings size={20} />
           </Link>
         )}

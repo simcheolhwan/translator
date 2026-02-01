@@ -1,60 +1,100 @@
 @import "./reset.css";
 @import "./variables.css";
 
-html,
-body {
-  height: 100%;
+/* Font imports */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+html {
+  color-scheme: dark;
 }
 
 body {
   font-family: var(--font-sans);
   font-size: var(--text-base);
-  color: var(--color-text-primary);
-  background-color: var(--color-background);
+  line-height: var(--leading-normal);
+  color: var(--text-primary);
+  background-color: var(--bg-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-#root {
-  height: 100%;
+/* Scrollbar - hidden but functional */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
+/* Links - no underline */
 a {
-  color: var(--color-primary);
+  color: inherit;
   text-decoration: none;
 }
 
-a:hover {
-  text-decoration: none;
-  opacity: 0.8;
-}
-
-button {
-  cursor: pointer;
-}
-
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
+/* Focus styles */
 :focus-visible {
-  outline: 2px solid var(--color-primary);
+  outline: 2px solid var(--color-gray-500);
   outline-offset: 2px;
 }
 
+/* Selection */
 ::selection {
-  background-color: var(--color-primary);
-  color: white;
+  background-color: var(--color-gray-600);
+  color: var(--text-primary);
 }
 
-.animate-spin {
-  animation: spin 1s linear infinite;
+/* Disabled state */
+[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
 }
 
+/* Base button reset */
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+}
+
+/* Keyframe animations */
 @keyframes spin {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes bounce {
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

@@ -44,10 +44,8 @@ export function ChatInput({
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLTextAreaElement>) => {
-      // Ignore during IME composition
       if (isComposingRef.current) return
 
-      // Submit on Enter (without Shift)
       if (e.key === "Enter" && !e.shiftKey) {
         e.preventDefault()
         const trimmed = text.trim()
@@ -56,7 +54,6 @@ export function ChatInput({
           setText("")
         }
       }
-      // Shift + Enter: newline (default behavior)
     },
     [text, isLoading, onSubmit],
   )
@@ -81,7 +78,7 @@ export function ChatInput({
   }, [])
 
   return (
-    <form className={styles.container} onSubmit={handleSubmit}>
+    <form className={styles.form} onSubmit={handleSubmit}>
       <textarea
         className={styles.textarea}
         value={text}
@@ -94,7 +91,7 @@ export function ChatInput({
       />
 
       <div className={styles.toolbar}>
-        <div className={styles.settingsDesktop}>
+        <div className={styles.settings}>
           <ModelSelector value={model} onChange={onModelChange} />
           <ToneSettings value={tone} onChange={onToneChange} />
         </div>
@@ -106,8 +103,10 @@ export function ChatInput({
           <Popover.Portal>
             <Popover.Positioner sideOffset={8}>
               <Popover.Popup className={styles.popover}>
-                <ModelSelector value={model} onChange={onModelChange} />
-                <ToneSettings value={tone} onChange={onToneChange} />
+                <div className={styles.popoverContent}>
+                  <ModelSelector value={model} onChange={onModelChange} />
+                  <ToneSettings value={tone} onChange={onToneChange} />
+                </div>
               </Popover.Popup>
             </Popover.Positioner>
           </Popover.Portal>
@@ -116,7 +115,7 @@ export function ChatInput({
         <div className={styles.actions}>
           <button
             type="button"
-            className={styles.pasteButton}
+            className={styles.iconButton}
             onClick={handlePaste}
             title={t("chat.paste")}
           >
@@ -128,7 +127,7 @@ export function ChatInput({
             disabled={!text.trim() || isLoading}
             title={t("chat.send")}
           >
-            {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+            {isLoading ? <Loader2 size={16} className={styles.spinner} /> : <Send size={16} />}
           </button>
         </div>
       </div>

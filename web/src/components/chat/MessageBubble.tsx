@@ -3,7 +3,6 @@ import Markdown from "react-markdown"
 import { useLocale } from "@/hooks/useLocale"
 import { CopyButton } from "@/components/common/CopyButton"
 import type { Message } from "@/types/session"
-import clsx from "clsx"
 import styles from "./MessageBubble.module.css"
 
 interface MessageBubbleProps {
@@ -16,49 +15,44 @@ export function MessageBubble({ message, onRetranslate }: MessageBubbleProps) {
 
   if (message.type === "source") {
     return (
-      <div className={styles.sourceWrapper}>
-        <div className={clsx(styles.container, styles.source)}>
-          <div className={styles.content}>{message.content}</div>
+      <div className={styles.sourceContainer}>
+        <div className={styles.sourceBubble}>
+          <div className={styles.sourceText}>{message.content}</div>
         </div>
         <div className={styles.actions}>
-          <CopyButton text={message.content} className={styles.actionButton} />
+          <CopyButton text={message.content} />
         </div>
       </div>
     )
   }
 
-  // Pending state: show loading indicator
   if (message.status === "pending") {
     return <LoadingBubble />
   }
 
-  // Error state: show error message
   if (message.status === "error") {
     return (
-      <div className={styles.translationWrapper}>
-        <div className={clsx(styles.container, styles.translation, styles.error)}>
-          <div className={styles.errorContent}>
-            <AlertCircle size={16} />
-            <span>{message.errorMessage ?? t("chat.failed")}</span>
-          </div>
+      <div className={styles.errorContainer}>
+        <div className={styles.errorBubble}>
+          <AlertCircle size={16} className={styles.errorIcon} />
+          <span className={styles.errorText}>{message.errorMessage ?? t("chat.failed")}</span>
         </div>
       </div>
     )
   }
 
-  // Completed state: show translation content
   return (
-    <div className={styles.translationWrapper}>
-      <div className={clsx(styles.container, styles.translation)}>
-        <div className={styles.content}>
+    <div className={styles.translationContainer}>
+      <div className={styles.translationBubble}>
+        <div className={styles.translationContent}>
           <Markdown>{message.content}</Markdown>
         </div>
       </div>
       <div className={styles.actions}>
-        <CopyButton text={message.content} className={styles.actionButton} />
+        <CopyButton text={message.content} />
         {onRetranslate && (
           <button
-            className={styles.actionButton}
+            className={styles.retranslateButton}
             onClick={() => onRetranslate(message.content, message.id)}
           >
             <Minimize2 size={12} />
@@ -80,7 +74,7 @@ export function MessageGroup({ sourceMessage, translations, onRetranslate }: Mes
   return (
     <>
       <MessageBubble message={sourceMessage} />
-      <div className={styles.translationGroup}>
+      <div className={styles.translationsGroup}>
         {translations.map((translation) => (
           <MessageBubble key={translation.id} message={translation} onRetranslate={onRetranslate} />
         ))}
@@ -91,11 +85,11 @@ export function MessageGroup({ sourceMessage, translations, onRetranslate }: Mes
 
 export function LoadingBubble() {
   return (
-    <div className={clsx(styles.container, styles.translation, styles.loading)}>
+    <div className={styles.loadingContainer}>
       <div className={styles.loadingDots}>
-        <span />
-        <span />
-        <span />
+        <span className={styles.loadingDot} />
+        <span className={styles.loadingDot} />
+        <span className={styles.loadingDot} />
       </div>
     </div>
   )

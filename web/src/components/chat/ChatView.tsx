@@ -37,7 +37,6 @@ export function ChatView({ sessionId }: ChatViewProps) {
     },
   })
 
-  // Group messages by source and their translations
   const messagePairs = useMemo<MessagePair[]>(() => {
     if (!session?.messages) return []
 
@@ -73,7 +72,6 @@ export function ChatView({ sessionId }: ChatViewProps) {
 
   const handleRetranslate = useCallback(
     (_text: string, parentId: string) => {
-      // Find the source text for this translation
       const pair = messagePairs.find((p) => p.translations.some((t) => t.id === parentId))
       if (pair) {
         retranslate(pair.source.content, parentId)
@@ -82,7 +80,6 @@ export function ChatView({ sessionId }: ChatViewProps) {
     [messagePairs, retranslate],
   )
 
-  // Scroll to bottom when new messages arrive
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messagePairs])
@@ -95,7 +92,7 @@ export function ChatView({ sessionId }: ChatViewProps) {
 
       {session && (session.username || session.description) && (
         <div className={styles.sessionHeader}>
-          {session.username && <span className={styles.sessionUsername}>{session.username}</span>}
+          {session.username && <span className={styles.username}>{session.username}</span>}
           {session.description && (
             <span className={styles.sessionDescription}>{session.description}</span>
           )}
