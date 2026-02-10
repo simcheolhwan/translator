@@ -62,18 +62,18 @@ export function ToneSettings({ value, onChange }: ToneSettingsProps) {
           <button
             type="button"
             className={styles.button}
-            data-active={value.domain === "general"}
-            onClick={() => onChange({ ...value, domain: "general" })}
-          >
-            {t("tone.general")}
-          </button>
-          <button
-            type="button"
-            className={styles.button}
             data-active={value.domain === "technical"}
             onClick={() => onChange({ ...value, domain: "technical" })}
           >
             {t("tone.technical")}
+          </button>
+          <button
+            type="button"
+            className={styles.button}
+            data-active={value.domain === "general"}
+            onClick={() => onChange({ ...value, domain: "general" })}
+          >
+            {t("tone.general")}
           </button>
         </div>
       </div>
