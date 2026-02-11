@@ -1,9 +1,14 @@
-import { api } from "./client"
+import { ref, remove } from "firebase/database"
+import { database, auth } from "@/lib/firebase"
 
 export async function deleteSession(sessionId: string): Promise<void> {
-  await api.delete("deleteSession", { searchParams: { sessionId } })
+  const uid = auth.currentUser?.uid
+  if (!uid) throw new Error("Not authenticated")
+  await remove(ref(database, `users/${uid}/sessions/${sessionId}`))
 }
 
 export async function clearAllSessions(): Promise<void> {
-  await api.delete("clearAllSessions")
+  const uid = auth.currentUser?.uid
+  if (!uid) throw new Error("Not authenticated")
+  await remove(ref(database, `users/${uid}/sessions`))
 }

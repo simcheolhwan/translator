@@ -1,12 +1,6 @@
 import { getFirebaseDatabase } from "./firebase.js"
 import type { Session, Message, MessageStatus, UserSettings } from "shared/types"
-import type { SessionWithMessages } from "../types/session.js"
-
-// Session operations
-export interface SessionMetadata {
-  username?: string
-  description: string
-}
+import type { SessionMetadata } from "./openai.js"
 
 export async function createSession(userId: string, metadata: SessionMetadata): Promise<Session> {
   const db = getFirebaseDatabase()
@@ -35,60 +29,6 @@ export async function createSession(userId: string, metadata: SessionMetadata): 
   await newSessionRef.set(sessionData)
 
   return session
-}
-
-export async function getSession(
-  userId: string,
-  sessionId: string,
-): Promise<SessionWithMessages | null> {
-  const db = getFirebaseDatabase()
-  const sessionRef = db.ref(`users/${userId}/sessions/${sessionId}`)
-  const snapshot = await sessionRef.get()
-
-  if (!snapshot.exists()) return null
-
-  const data = snapshot.val()
-  return {
-    id: sessionId,
-    username: data.username,
-    description: data.description || "",
-    createdAt: data.createdAt,
-    updatedAt: data.updatedAt,
-    messages: data.messages || {},
-  }
-}
-
-export async function listSessions(userId: string): Promise<Session[]> {
-  const db = getFirebaseDatabase()
-  const sessionsRef = db.ref(`users/${userId}/sessions`)
-  const snapshot = await sessionsRef.orderByChild("updatedAt").get()
-
-  if (!snapshot.exists()) return []
-
-  const sessions: Session[] = []
-  snapshot.forEach((child) => {
-    const data = child.val()
-    sessions.push({
-      id: child.key!,
-      username: data.username,
-      description: data.description || "",
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt,
-    })
-  })
-
-  // Reverse to get most recent first
-  return sessions.reverse()
-}
-
-export async function deleteSession(userId: string, sessionId: string): Promise<void> {
-  const db = getFirebaseDatabase()
-  await db.ref(`users/${userId}/sessions/${sessionId}`).remove()
-}
-
-export async function clearAllSessions(userId: string): Promise<void> {
-  const db = getFirebaseDatabase()
-  await db.ref(`users/${userId}/sessions`).remove()
 }
 
 export async function updateSessionTimestamp(userId: string, sessionId: string): Promise<void> {
@@ -227,23 +167,4 @@ export async function getUserSettings(userId: string): Promise<UserSettings | nu
 
   if (!snapshot.exists()) return null
   return snapshot.val()
-}
-
-export async function updateUserSettings(
-  userId: string,
-  globalInstruction: string,
-): Promise<UserSettings> {
-  const db = getFirebaseDatabase()
-  const settingsRef = db.ref(`users/${userId}/settings`)
-  const existing = await getUserSettings(userId)
-
-  const now = Date.now()
-  const settings: UserSettings = {
-    globalInstruction,
-    createdAt: existing?.createdAt ?? now,
-    updatedAt: now,
-  }
-
-  await settingsRef.set(settings)
-  return settings
 }
