@@ -1,5 +1,6 @@
 import { getFirebaseDatabase } from "./firebase.js"
-import type { Session, SessionWithMessages, Message, MessageStatus } from "../types/session.js"
+import type { Session, Message, MessageStatus, UserSettings } from "shared/types"
+import type { SessionWithMessages } from "../types/session.js"
 
 // Session operations
 export interface SessionMetadata {
@@ -219,12 +220,6 @@ export async function getMessageContent(
 }
 
 // Settings operations
-export interface UserSettings {
-  globalInstruction: string
-  createdAt: number
-  updatedAt: number
-}
-
 export async function getUserSettings(userId: string): Promise<UserSettings | null> {
   const db = getFirebaseDatabase()
   const settingsRef = db.ref(`users/${userId}/settings`)

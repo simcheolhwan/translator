@@ -1,32 +1,7 @@
-import type { ToneSettings, Model } from "@/lib/constants"
+import type { Session as SessionBase, Message } from "shared/types"
 
-export type MessageStatus = "pending" | "completed" | "error"
-
-export interface Message {
-  id: string
-  type: "source" | "translation"
-  content: string
-  status: MessageStatus
-  model?: Model
-  tone?: ToneSettings
-  parentId?: string // For re-translations
-  createdAt: number
-  errorMessage?: string
-}
-
-export interface Session {
-  id: string
-  username?: string
-  description: string
+export interface Session extends SessionBase {
   messages: Message[]
-  createdAt: number
-  updatedAt: number
 }
 
-export interface SessionListItem {
-  id: string
-  username?: string
-  description: string
-  createdAt: number
-  updatedAt: number
-}
+export type SessionListItem = SessionBase

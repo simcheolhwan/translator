@@ -1,5 +1,5 @@
 import { useLocale } from "@/hooks/useLocale"
-import { MODELS, type Model } from "@/lib/constants"
+import { MODELS, type Model } from "shared/constants"
 import styles from "./ModelSelector.module.css"
 
 interface ModelSelectorProps {

@@ -1,34 +1,40 @@
-# Korean-English Translator
+# 한영 번역기
 
-A chat-based translation app for Korean and English powered by LLM.
+LLM 기반 채팅형 한영 번역 앱.
 
-## Tech Stack
+## 기술 스택
 
-### Frontend
+### 프론트엔드 (web)
 
 - React 19 + TypeScript + Vite
 - TanStack Query / Router
-- Zustand (state management)
+- Zustand (상태 관리)
 - Base UI + CSS Modules
-- Firebase Auth (Google Sign-in)
+- Firebase Auth (Google 로그인)
+- Vercel 배포
 
-### Backend
+### 백엔드 (functions)
 
-- Google Cloud Functions (2nd gen)
+- Google Cloud Functions (2세대)
 - OpenAI SDK
 - Firebase Realtime Database
 
-## Prerequisites
+### 공유 패키지 (shared)
 
-- Node.js 24 (frontend)
-- Node.js 22 (backend/Cloud Functions)
+- 타입, Zod 스키마, 상수, 시스템 프롬프트
+- `workspace:*`로 web, functions에서 참조
+
+## 사전 요구사항
+
+- Node.js 24 (프론트엔드)
+- Node.js 22 (백엔드/Cloud Functions)
 - pnpm 10+
 - Firebase CLI (`npm install -g firebase-tools`)
-- Google Cloud CLI (for deployment)
+- Google Cloud CLI (배포용)
 
-## Getting Started
+## 시작하기
 
-### 1. Clone and Install
+### 1. 클론 및 설치
 
 ```bash
 git clone <repo>
@@ -36,80 +42,77 @@ cd translator
 pnpm install
 ```
 
-### 2. Firebase Setup
+### 2. Firebase 설정
 
 ```bash
 firebase login
 firebase use --add
 ```
 
-### 3. Environment Variables
+### 3. 환경 변수
 
-#### Frontend
+#### 프론트엔드
 
 ```bash
 cp web/.env.example web/.env
-# Fill in Firebase config (VITE_FIREBASE_*)
+# Firebase 설정값 입력 (VITE_FIREBASE_*)
 ```
 
-#### Functions (Local Development)
+#### Functions (로컬 개발)
 
 ```bash
 cp functions/.env.example functions/.env.local
-# Edit: OPENAI_API_KEY=sk-...
-# Edit: ALLOWED_EMAILS=your-email@gmail.com (leave empty to allow all)
+# OPENAI_API_KEY=sk-...
+# ALLOWED_EMAILS=your-email@gmail.com (비워두면 모든 사용자 허용)
 ```
 
-### 4. Run Development
+### 4. 개발 서버 실행
 
 ```bash
-# Terminal 1: Frontend dev server
+# 터미널 1: 프론트엔드 개발 서버
 pnpm --filter web dev
 
-# Terminal 2: Backend with Firebase emulators (Functions + Database + Auth)
+# 터미널 2: Firebase 에뮬레이터 (Functions + Database + Auth)
 pnpm --filter functions dev
 ```
 
-The emulator UI is available at http://localhost:4000
+에뮬레이터 UI: http://localhost:4000
 
-## Available Scripts
+## 스크립트
 
-| Script                          | Description                        |
-| ------------------------------- | ---------------------------------- |
-| `pnpm --filter web dev`         | Start frontend dev server          |
-| `pnpm --filter web build`       | Build frontend                     |
-| `pnpm --filter functions dev`   | Build and start Firebase emulators |
-| `pnpm --filter functions build` | Build Cloud Functions              |
-| `pnpm typecheck`                | Run TypeScript type checking       |
-| `pnpm lint`                     | Run ESLint on all packages         |
+| 스크립트                        | 설명                             |
+| ------------------------------- | -------------------------------- |
+| `pnpm --filter web dev`         | 프론트엔드 개발 서버 실행        |
+| `pnpm --filter web build`       | 프론트엔드 빌드 (shared → vite)  |
+| `pnpm --filter functions dev`   | Firebase 에뮬레이터 빌드 및 실행 |
+| `pnpm --filter functions build` | Cloud Functions 빌드             |
+| `pnpm --filter shared build`    | 공유 패키지 빌드                 |
+| `pnpm typecheck`                | TypeScript 타입 검사 (전체)      |
+| `pnpm lint`                     | ESLint 실행 (전체)               |
 
-## Deployment
+## 배포
 
-### Initial Setup (One-time)
+### 초기 설정 (1회)
 
 ```bash
-# Set OpenAI API Key as secret
+# OpenAI API Key를 시크릿으로 등록
 firebase functions:secrets:set OPENAI_API_KEY
 ```
 
-### Deploy
+### 배포 실행
 
 ```bash
-# Functions only
-pnpm --filter functions build
+# Functions 배포
 firebase deploy --only functions
 
-# Hosting only
-pnpm --filter web build
-firebase deploy --only hosting
-
-# Everything
-firebase deploy
+# 프론트엔드 (Vercel)
+# Vercel Git 연동으로 자동 배포됨.
+# 수동 배포: `pnpm --filter web build` 후 Vercel CLI로 배포.
 ```
 
-### Access Control (ALLOWED_EMAILS)
+### 접근 제어 (ALLOWED_EMAILS)
 
-Configure allowed email addresses via `firebase.json`:
+`firebase.json`에서 허용 이메일 설정:
 
 ```json
 {
@@ -121,43 +124,43 @@ Configure allowed email addresses via `firebase.json`:
 }
 ```
 
-Or set during deployment:
+또는 배포 시 지정:
 
 ```bash
 firebase deploy --only functions --set-env ALLOWED_EMAILS="user1@example.com,user2@example.com"
 ```
 
-## Project Structure
+## 프로젝트 구조
 
 ```
 translator/
-├── web/                  # Frontend (React 19)
+├── shared/               # 공유 라이브러리 (workspace:*)
+│   └── src/
+│       ├── types/        # TypeScript 타입
+│       ├── schemas/      # Zod 스키마
+│       ├── prompts/      # 시스템 프롬프트
+│       └── constants.ts  # 모델, 어조, 임계값
+├── web/                  # 프론트엔드 (React 19, Vercel)
 │   ├── src/
-│   │   ├── api/          # API client (ky)
-│   │   ├── components/   # UI components
-│   │   ├── hooks/        # Custom hooks
-│   │   ├── lib/          # Utilities
+│   │   ├── api/          # API 클라이언트 (ky)
+│   │   ├── components/   # UI 컴포넌트
+│   │   ├── hooks/        # 커스텀 훅
+│   │   ├── lib/          # 유틸리티
 │   │   ├── queries/      # TanStack Query
 │   │   ├── routes/       # TanStack Router
-│   │   ├── schemas/      # Zod schemas
-│   │   ├── stores/       # Zustand stores
-│   │   ├── styles/       # Global styles
-│   │   └── types/        # TypeScript types
+│   │   ├── stores/       # Zustand 스토어
+│   │   ├── styles/       # 글로벌 스타일
+│   │   └── types/        # TypeScript 타입
 │   └── public/
-│       └── locales/      # i18n (en.json, ko.json)
-├── functions/            # Backend (Cloud Functions)
+│       └── locales/      # 다국어 (en.json, ko.json)
+├── functions/            # 백엔드 (Cloud Functions)
 │   └── src/
-│       ├── functions/    # Endpoint handlers
-│       ├── middleware/   # Auth, CORS, email whitelist
-│       ├── prompts/      # LLM system prompts
+│       ├── functions/    # 엔드포인트 핸들러
+│       ├── middleware/   # 인증, CORS, 이메일 화이트리스트
 │       ├── services/     # OpenAI, Firebase, Database
-│       └── types/        # TypeScript types
+│       └── types/        # TypeScript 타입
 ├── docs/
-│   └── spec.md           # Product specification
-├── firebase.json         # Firebase configuration
-└── pnpm-workspace.yaml   # Monorepo workspace
+│   └── spec.md           # 제품 명세서
+├── firebase.json         # Firebase 설정
+└── pnpm-workspace.yaml   # 모노레포 워크스페이스 (shared, web, functions)
 ```
-
-## License
-
-Private

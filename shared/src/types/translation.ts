@@ -1,4 +1,4 @@
-import type { ToneSettings, Model } from "../lib/constants.js"
+import type { ToneSettings, Model } from "../constants.js"
 
 export interface TranslateRequest {
   sessionId?: string
@@ -14,5 +14,4 @@ export interface TranslateResponse {
   sessionId: string
   sourceMessageId: string
   translationMessageId: string
-  translatedText: string
 }

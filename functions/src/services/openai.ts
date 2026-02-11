@@ -1,6 +1,7 @@
 import OpenAI from "openai"
-import type { Model, ToneSettings } from "../lib/constants.js"
+import type { Model, ToneSettings } from "shared/constants"
 import { buildTranslatePrompt, getSystemMessages } from "../prompts/translate.js"
+import type { TranslationPair } from "./database.js"
 
 let openaiClient: OpenAI | null = null
 
@@ -10,8 +11,6 @@ export function getOpenAIClient(apiKey: string): OpenAI {
   }
   return openaiClient
 }
-
-import type { TranslationPair } from "./database.js"
 
 interface TranslateOptions {
   apiKey: string

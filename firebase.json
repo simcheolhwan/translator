@@ -7,7 +7,7 @@
       "source": "functions",
       "codebase": "default",
       "ignore": ["node_modules", ".git", "src"],
-      "predeploy": ["pnpm --filter functions build"]
+      "predeploy": ["pnpm --filter shared build", "pnpm --filter functions build"]
     }
   ],
   "emulators": {

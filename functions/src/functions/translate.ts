@@ -1,17 +1,17 @@
 import { onRequest } from "firebase-functions/v2/https"
-import { z } from "zod"
-import { authMiddleware } from "../middleware/auth.js"
-import { allowedEmailsMiddleware } from "../middleware/allowedEmails.js"
-import { openaiApiKey } from "../lib/config.js"
+import { toneSettingsSchema } from "shared/schemas"
 import {
-  FUNCTION_REGION,
   MODELS,
-  TONE_SETTINGS,
   DEFAULT_MODEL,
   DEFAULT_TONE,
   type Model,
   type ToneSettings,
-} from "../lib/constants.js"
+} from "shared/constants"
+import { z } from "zod"
+import { authMiddleware } from "../middleware/auth.js"
+import { allowedEmailsMiddleware } from "../middleware/allowedEmails.js"
+import { openaiApiKey } from "../lib/config.js"
+import { FUNCTION_REGION } from "../lib/constants.js"
 import { translate, generateSessionMetadata } from "../services/openai.js"
 import {
   createSession,
@@ -92,13 +92,7 @@ const translateSchema = z.object({
   text: z.string().min(1),
   isKorean: z.boolean(),
   model: z.enum(MODELS).default(DEFAULT_MODEL),
-  tone: z
-    .object({
-      translationStyle: z.enum(TONE_SETTINGS.translationStyle),
-      formality: z.enum(TONE_SETTINGS.formality),
-      domain: z.enum(TONE_SETTINGS.domain),
-    })
-    .default(DEFAULT_TONE),
+  tone: toneSettingsSchema.default(DEFAULT_TONE),
   concise: z.boolean().optional(),
   parentMessageId: z.string().optional(),
 })

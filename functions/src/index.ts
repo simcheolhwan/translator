@@ -14,4 +14,4 @@ export { getSettingsFunction as getSettings } from "./functions/settings/get.js"
 export { updateSettingsFunction as updateSettings } from "./functions/settings/update.js"
 
 // Export system prompt for disclosure
-export { SYSTEM_PROMPT } from "./prompts/system.js"
+export { SYSTEM_PROMPT } from "shared/prompts"

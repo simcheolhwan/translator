@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { useRealtimeSession } from "./useRealtimeSession"
-import { SESSION_WARNING_THRESHOLD, SESSION_MAX_CONTEXT_SIZE } from "@/lib/constants"
+import { SESSION_WARNING_THRESHOLD, SESSION_MAX_CONTEXT_SIZE } from "shared/constants"
 
 export function useSessionWarning(sessionId: string | undefined) {
   const { session } = useRealtimeSession(sessionId)

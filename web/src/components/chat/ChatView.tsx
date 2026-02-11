@@ -8,7 +8,7 @@ import { useSessionWarning } from "@/hooks/useSessionWarning"
 import { ChatInput } from "./ChatInput"
 import { MessageGroup } from "./MessageBubble"
 import { SessionWarning } from "./SessionWarning"
-import type { Message } from "@/types/session"
+import type { Message } from "shared/types"
 import styles from "./ChatView.module.css"
 
 interface ChatViewProps {

@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { MODELS, TONE_OPTIONS } from "@/lib/constants"
+import { MODELS, TONE_OPTIONS } from "../constants.js"
 
 export const toneSettingsSchema = z.object({
   translationStyle: z.enum(TONE_OPTIONS.translationStyle),

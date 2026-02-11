@@ -1,5 +1,4 @@
-// Hardcoded system instructions (disclosed to users)
-// Keep in sync with functions/src/prompts/system.ts
+// Disclosed to users in the settings page
 export const SYSTEM_PROMPT = `You are a professional Korean-English translator.
 
 ## Core Rules

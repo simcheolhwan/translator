@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react"
 import { useTranslateMutation } from "@/queries/translations"
-import { DEFAULT_MODEL, DEFAULT_TONE, type Model, type ToneSettings } from "@/lib/constants"
+import { DEFAULT_MODEL, DEFAULT_TONE, type Model, type ToneSettings } from "shared/constants"
 import { isKorean } from "@/lib/detectLanguage"
 
 interface UseTranslateOptions {

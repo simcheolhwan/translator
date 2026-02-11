@@ -1,6 +1,5 @@
 import { create } from "zustand"
-import type { Model, ToneSettings } from "@/lib/constants"
-import { DEFAULT_MODEL, DEFAULT_TONE } from "@/lib/constants"
+import { DEFAULT_MODEL, DEFAULT_TONE, type Model, type ToneSettings } from "shared/constants"
 
 interface TranslationState {
   currentSessionId: string | null

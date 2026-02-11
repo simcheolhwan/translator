@@ -1,5 +1,5 @@
 import { api } from "./client"
-import type { UserSettings } from "@/types/settings"
+import type { UserSettings } from "shared/types"
 
 export async function getSettings(): Promise<UserSettings> {
   const response = await api.get("getSettings").json<{ settings: UserSettings }>()

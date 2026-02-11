@@ -29,6 +29,9 @@ importers:
       openai:
         specifier: ^6.21.0
         version: 6.21.0(zod@4.3.6)
+      shared:
+        specifier: workspace:*
+        version: link:../shared
       zod:
         specifier: ^4.3.6
         version: 4.3.6
@@ -51,6 +54,16 @@ importers:
       vitest:
         specifier: ^4.0.18
         version: 4.0.18(@opentelemetry/api@1.9.0)(@types/node@25.2.3)(tsx@4.21.0)(yaml@2.8.2)
+
+  shared:
+    dependencies:
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
+    devDependencies:
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
   web:
     dependencies:
@@ -93,6 +106,9 @@ importers:
       react-markdown:
         specifier: ^10.1.0
         version: 10.1.0(@types/react@19.2.13)(react@19.2.4)
+      shared:
+        specifier: workspace:*
+        version: link:../shared
       zod:
         specifier: ^4.3.6
         version: 4.3.6
