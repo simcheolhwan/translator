@@ -77,7 +77,6 @@ export async function translate(options: TranslateOptions): Promise<string> {
     model,
     messages: [...getSystemMessages(), { role: "user", content: userPrompt }],
     max_completion_tokens: 4096,
-    reasoning_effort: "low",
   })
 
   const content = response.choices[0]?.message?.content
