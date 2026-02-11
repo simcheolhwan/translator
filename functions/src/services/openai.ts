@@ -16,6 +16,7 @@ import type { TranslationPair } from "./database.js"
 interface TranslateOptions {
   apiKey: string
   text: string
+  isKorean: boolean
   model: Model
   tone: ToneSettings
   context: TranslationPair[]
@@ -64,13 +65,23 @@ Example: {"description": "최신 SF 영화에 대한 상세 리뷰", "username":
 }
 
 export async function translate(options: TranslateOptions): Promise<string> {
-  const { apiKey, text, model, tone, context, userInstruction, concise, previousTranslation } =
-    options
+  const {
+    apiKey,
+    text,
+    isKorean,
+    model,
+    tone,
+    context,
+    userInstruction,
+    concise,
+    previousTranslation,
+  } = options
 
   const client = getOpenAIClient(apiKey)
 
   const userPrompt = buildTranslatePrompt({
     text,
+    isKorean,
     tone,
     context,
     userInstruction,

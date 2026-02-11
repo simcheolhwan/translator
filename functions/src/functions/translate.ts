@@ -31,6 +31,7 @@ interface TranslateInBackgroundParams {
   sessionId: string
   messageId: string
   text: string
+  isKorean: boolean
   model: Model
   tone: ToneSettings
   concise?: boolean
@@ -38,8 +39,18 @@ interface TranslateInBackgroundParams {
 }
 
 async function translateInBackground(params: TranslateInBackgroundParams): Promise<void> {
-  const { apiKey, userId, sessionId, messageId, text, model, tone, concise, parentMessageId } =
-    params
+  const {
+    apiKey,
+    userId,
+    sessionId,
+    messageId,
+    text,
+    isKorean,
+    model,
+    tone,
+    concise,
+    parentMessageId,
+  } = params
 
   try {
     const settings = await getUserSettings(userId)
@@ -55,6 +66,7 @@ async function translateInBackground(params: TranslateInBackgroundParams): Promi
     const translatedText = await translate({
       apiKey,
       text,
+      isKorean,
       model,
       tone,
       context,
@@ -78,6 +90,7 @@ async function translateInBackground(params: TranslateInBackgroundParams): Promi
 const translateSchema = z.object({
   sessionId: z.string().optional(),
   text: z.string().min(1),
+  isKorean: z.boolean(),
   model: z.enum(MODELS).default(DEFAULT_MODEL),
   tone: z
     .object({
@@ -120,7 +133,7 @@ export const translateFunction = onRequest(
             return
           }
 
-          const { text, model, tone, concise, parentMessageId } = parseResult.data
+          const { text, isKorean, model, tone, concise, parentMessageId } = parseResult.data
           let { sessionId } = parseResult.data
 
           // Create new session if not provided
@@ -172,6 +185,7 @@ export const translateFunction = onRequest(
             sessionId,
             messageId: translationMessage.id,
             text,
+            isKorean,
             model,
             tone,
             concise,

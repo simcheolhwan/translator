@@ -10,6 +10,7 @@ export const toneSettingsSchema = z.object({
 export const translateRequestSchema = z.object({
   sessionId: z.string().optional(),
   text: z.string().min(1, "Text is required"),
+  isKorean: z.boolean(),
   model: z.enum(MODELS),
   tone: toneSettingsSchema,
   concise: z.boolean().optional(),

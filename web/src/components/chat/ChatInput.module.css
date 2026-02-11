@@ -69,6 +69,12 @@
   border-color: var(--border-strong);
 }
 
+.direction {
+  font-size: var(--text-lg);
+  color: var(--text-secondary);
+  user-select: none;
+}
+
 .actions {
   display: flex;
   align-items: center;

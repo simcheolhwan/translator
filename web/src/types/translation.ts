@@ -3,6 +3,7 @@ import type { ToneSettings, Model } from "@/lib/constants"
 export interface TranslateRequest {
   sessionId?: string
   text: string
+  isKorean: boolean
   model: Model
   tone: ToneSettings
   concise?: boolean // For re-translate more concisely

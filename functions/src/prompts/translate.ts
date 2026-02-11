@@ -4,6 +4,7 @@ import { SYSTEM_PROMPT } from "./system.js"
 
 interface TranslatePromptOptions {
   text: string
+  isKorean: boolean
   tone: ToneSettings
   context: TranslationPair[]
   userInstruction?: string
@@ -12,9 +13,15 @@ interface TranslatePromptOptions {
 }
 
 export function buildTranslatePrompt(options: TranslatePromptOptions): string {
-  const { text, tone, context, userInstruction, concise, previousTranslation } = options
+  const { text, isKorean, tone, context, userInstruction, concise, previousTranslation } = options
 
   const parts: string[] = []
+
+  // Translation direction
+  const direction = isKorean
+    ? "Translate from Korean to English"
+    : "Translate from English to Korean"
+  parts.push(direction)
 
   // Style settings
   const styleLines: string[] = []

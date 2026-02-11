@@ -4,6 +4,7 @@ import { Send, Loader2, ClipboardPaste, Settings } from "lucide-react"
 import { useLocale } from "@/hooks/useLocale"
 import { ModelSelector } from "@/components/common/ModelSelector"
 import { ToneSettings } from "@/components/common/ToneSettings"
+import { isKorean } from "@/lib/detectLanguage"
 import type { Model, ToneSettings as ToneSettingsType } from "@/lib/constants"
 import styles from "./ChatInput.module.css"
 
@@ -111,6 +112,10 @@ export function ChatInput({
             </Popover.Positioner>
           </Popover.Portal>
         </Popover.Root>
+
+        {text.trim() && (
+          <span className={styles.direction}>{isKorean(text) ? "🇰🇷 → 🇺🇸" : "🇺🇸 → 🇰🇷"}</span>
+        )}
 
         <div className={styles.actions}>
           <button

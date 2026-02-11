@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react"
 import { useTranslateMutation } from "@/queries/translations"
 import { DEFAULT_MODEL, DEFAULT_TONE, type Model, type ToneSettings } from "@/lib/constants"
+import { isKorean } from "@/lib/detectLanguage"
 
 interface UseTranslateOptions {
   sessionId?: string
@@ -19,6 +20,7 @@ export function useTranslate(options: UseTranslateOptions = {}) {
       const result = await mutation.mutateAsync({
         sessionId,
         text,
+        isKorean: isKorean(text),
         model,
         tone,
         ...overrides,
