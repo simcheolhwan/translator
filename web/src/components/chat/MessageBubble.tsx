@@ -2,7 +2,7 @@ import { Minimize2, AlertCircle } from "lucide-react"
 import Markdown from "react-markdown"
 import { useLocale } from "@/hooks/useLocale"
 import { CopyButton } from "@/components/common/CopyButton"
-import type { Message } from "shared/types"
+import type { Message } from "functions/types"
 import styles from "./MessageBubble.module.css"
 
 interface MessageBubbleProps {

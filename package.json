@@ -2,7 +2,7 @@
   "name": "translator",
   "private": true,
   "scripts": {
-    "typecheck": "pnpm --filter shared build && pnpm -r typecheck",
+    "typecheck": "pnpm --filter functions build && pnpm -r typecheck",
     "lint": "pnpm -r lint",
     "prepare": "simple-git-hooks"
   },

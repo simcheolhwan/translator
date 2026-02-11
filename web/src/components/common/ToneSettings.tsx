@@ -1,5 +1,5 @@
 import { useLocale } from "@/hooks/useLocale"
-import type { ToneSettings as ToneSettingsType } from "shared/constants"
+import type { ToneSettings as ToneSettingsType } from "functions/constants"
 import styles from "./ToneSettings.module.css"
 
 interface ToneSettingsProps {

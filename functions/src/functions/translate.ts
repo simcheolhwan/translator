@@ -1,12 +1,12 @@
 import { onRequest } from "firebase-functions/v2/https"
-import { toneSettingsSchema } from "shared/schemas"
+import { toneSettingsSchema } from "../shared/schemas/index.js"
 import {
   MODELS,
   DEFAULT_MODEL,
   DEFAULT_TONE,
   type Model,
   type ToneSettings,
-} from "shared/constants"
+} from "../shared/constants.js"
 import { z } from "zod"
 import { authMiddleware } from "../middleware/auth.js"
 import { allowedEmailsMiddleware } from "../middleware/allowedEmails.js"

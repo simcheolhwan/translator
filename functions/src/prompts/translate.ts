@@ -1,5 +1,5 @@
-import type { ToneSettings } from "shared/constants"
-import { SYSTEM_PROMPT } from "shared/prompts"
+import type { ToneSettings } from "../shared/constants.js"
+import { SYSTEM_PROMPT } from "../shared/prompts/index.js"
 import type { TranslationPair } from "../services/database.js"
 
 interface TranslatePromptOptions {

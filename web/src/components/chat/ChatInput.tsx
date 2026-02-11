@@ -5,7 +5,7 @@ import { useLocale } from "@/hooks/useLocale"
 import { ModelSelector } from "@/components/common/ModelSelector"
 import { ToneSettings } from "@/components/common/ToneSettings"
 import { isKorean } from "@/lib/detectLanguage"
-import type { Model, ToneSettings as ToneSettingsType } from "shared/constants"
+import type { Model, ToneSettings as ToneSettingsType } from "functions/constants"
 import styles from "./ChatInput.module.css"
 
 interface ChatInputProps {

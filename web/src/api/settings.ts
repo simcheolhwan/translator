@@ -1,6 +1,6 @@
 import { ref, get, set } from "firebase/database"
 import { database, auth } from "@/lib/firebase"
-import type { UserSettings } from "shared/types"
+import type { UserSettings } from "functions/types"
 
 export async function getSettings(): Promise<UserSettings> {
   const uid = auth.currentUser?.uid

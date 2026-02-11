@@ -4,6 +4,25 @@
   "version": "0.0.0",
   "type": "module",
   "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./constants": {
+      "types": "./dist/shared/constants.d.ts",
+      "default": "./dist/shared/constants.js"
+    },
+    "./types": {
+      "types": "./dist/shared/types/index.d.ts",
+      "default": "./dist/shared/types/index.js"
+    },
+    "./schemas": {
+      "types": "./dist/shared/schemas/index.d.ts",
+      "default": "./dist/shared/schemas/index.js"
+    },
+    "./prompts": {
+      "types": "./dist/shared/prompts/index.d.ts",
+      "default": "./dist/shared/prompts/index.js"
+    }
+  },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch --preserveWatchOutput & firebase emulators:start --config ../firebase.json",
@@ -16,7 +35,6 @@
     "node": "22"
   },
   "dependencies": {
-    "shared": "workspace:*",
     "firebase-admin": "^13.6.1",
     "firebase-functions": "^7.0.5",
     "openai": "^6.21.0",

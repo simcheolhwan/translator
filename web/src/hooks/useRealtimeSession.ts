@@ -2,7 +2,7 @@ import { useCallback, useMemo, useSyncExternalStore } from "react"
 import { ref, onValue } from "firebase/database"
 import { database } from "@/lib/firebase"
 import { useAuth } from "./useAuth"
-import type { Message } from "shared/types"
+import type { Message } from "functions/types"
 import type { Session } from "@/types/session"
 
 interface SessionData {

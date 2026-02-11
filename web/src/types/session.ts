@@ -1,4 +1,4 @@
-import type { Session as SessionBase, Message } from "shared/types"
+import type { Session as SessionBase, Message } from "functions/types"
 
 export interface Session extends SessionBase {
   messages: Message[]

@@ -4,7 +4,7 @@ import { Check, Loader2, LogOut } from "lucide-react"
 import { useAuth } from "@/hooks/useAuth"
 import { useLocale } from "@/hooks/useLocale"
 import { useSettingsQuery, useUpdateSettingsMutation } from "@/queries/settings"
-import { SYSTEM_PROMPT } from "shared/prompts"
+import { SYSTEM_PROMPT } from "functions/prompts"
 import styles from "./settings.module.css"
 
 export const Route = createFileRoute("/settings")({

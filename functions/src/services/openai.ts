@@ -1,5 +1,5 @@
 import OpenAI from "openai"
-import type { Model, ToneSettings } from "shared/constants"
+import type { Model, ToneSettings } from "../shared/constants.js"
 import { buildTranslatePrompt, getSystemMessages } from "../prompts/translate.js"
 import type { TranslationPair } from "./database.js"
 

@@ -1,5 +1,5 @@
 import { getFirebaseDatabase } from "./firebase.js"
-import type { Session, Message, MessageStatus, UserSettings } from "shared/types"
+import type { Session, Message, MessageStatus, UserSettings } from "../shared/types/index.js"
 import type { SessionMetadata } from "./openai.js"
 
 export async function createSession(userId: string, metadata: SessionMetadata): Promise<Session> {

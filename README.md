@@ -19,10 +19,10 @@ LLM 기반 채팅형 한영 번역 앱.
 - OpenAI SDK
 - Firebase Realtime Database
 
-### 공유 패키지 (shared)
+### 공유 코드 (functions/src/shared)
 
 - 타입, Zod 스키마, 상수, 시스템 프롬프트
-- `workspace:*`로 web, functions에서 참조
+- functions 패키지 안에 위치, `exports` 필드를 통해 web에서 참조
 
 ## 사전 요구사항
 
@@ -72,7 +72,7 @@ cp functions/.env.example functions/.env.local
 # 터미널 1: 프론트엔드 개발 서버
 pnpm --filter web dev
 
-# 터미널 2: Firebase 에뮬레이터 (Functions + Database + Auth)
+# 터미널 2: Firebase 에뮬레이터 (Functions + Database)
 pnpm --filter functions dev
 ```
 
@@ -80,15 +80,16 @@ pnpm --filter functions dev
 
 ## 스크립트
 
-| 스크립트                        | 설명                             |
-| ------------------------------- | -------------------------------- |
-| `pnpm --filter web dev`         | 프론트엔드 개발 서버 실행        |
-| `pnpm --filter web build`       | 프론트엔드 빌드 (shared → vite)  |
-| `pnpm --filter functions dev`   | Firebase 에뮬레이터 빌드 및 실행 |
-| `pnpm --filter functions build` | Cloud Functions 빌드             |
-| `pnpm --filter shared build`    | 공유 패키지 빌드                 |
-| `pnpm typecheck`                | TypeScript 타입 검사 (전체)      |
-| `pnpm lint`                     | ESLint 실행 (전체)               |
+| 스크립트                        | 설명                               |
+| ------------------------------- | ---------------------------------- |
+| `pnpm --filter web dev`         | 프론트엔드 개발 서버 실행          |
+| `pnpm --filter web build`       | 프론트엔드 빌드 (functions → vite) |
+| `pnpm --filter functions dev`   | Firebase 에뮬레이터 빌드 및 실행   |
+| `pnpm --filter functions build` | Cloud Functions 빌드               |
+| `pnpm --filter web test`        | 프론트엔드 테스트 (vitest)         |
+| `pnpm --filter functions test`  | Cloud Functions 테스트 (vitest)    |
+| `pnpm typecheck`                | TypeScript 타입 검사 (전체)        |
+| `pnpm lint`                     | ESLint 실행 (전체)                 |
 
 ## 배포
 
@@ -112,34 +113,23 @@ firebase deploy --only functions
 
 ### 접근 제어 (ALLOWED_EMAILS)
 
-`firebase.json`에서 허용 이메일 설정:
-
-```json
-{
-  "functions": {
-    "env": {
-      "ALLOWED_EMAILS": "user1@example.com,user2@example.com"
-    }
-  }
-}
-```
-
-또는 배포 시 지정:
+`functions/.env` 파일에서 허용 이메일 설정:
 
 ```bash
-firebase deploy --only functions --set-env ALLOWED_EMAILS="user1@example.com,user2@example.com"
+# functions/.env
+ALLOWED_EMAILS=user1@example.com,user2@example.com
+```
+
+또는 Firebase 시크릿으로 등록:
+
+```bash
+firebase functions:secrets:set ALLOWED_EMAILS
 ```
 
 ## 프로젝트 구조
 
 ```
 translator/
-├── shared/               # 공유 라이브러리 (workspace:*)
-│   └── src/
-│       ├── types/        # TypeScript 타입
-│       ├── schemas/      # Zod 스키마
-│       ├── prompts/      # 시스템 프롬프트
-│       └── constants.ts  # 모델, 어조, 임계값
 ├── web/                  # 프론트엔드 (React 19, Vercel)
 │   ├── src/
 │   │   ├── api/          # API 클라이언트 (ky)
@@ -155,12 +145,13 @@ translator/
 │       └── locales/      # 다국어 (en.json, ko.json)
 ├── functions/            # 백엔드 (Cloud Functions)
 │   └── src/
+│       ├── shared/       # 공유 코드 (타입, 스키마, 상수, 프롬프트)
 │       ├── functions/    # 엔드포인트 핸들러
+│       ├── lib/          # 설정 관리 (defineSecret, defineString)
 │       ├── middleware/   # 인증, CORS, 이메일 화이트리스트
+│       ├── prompts/      # 번역 프롬프트 빌더 (buildTranslatePrompt)
 │       ├── services/     # OpenAI, Firebase, Database
 │       └── types/        # TypeScript 타입
-├── docs/
-│   └── spec.md           # 제품 명세서
 ├── firebase.json         # Firebase 설정
-└── pnpm-workspace.yaml   # 모노레포 워크스페이스 (shared, web, functions)
+└── pnpm-workspace.yaml   # 모노레포 워크스페이스 (web, functions)
 ```
