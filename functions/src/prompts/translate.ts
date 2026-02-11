@@ -1,16 +1,18 @@
 import type { ToneSettings } from "../lib/constants.js"
+import type { TranslationPair } from "../services/database.js"
 import { SYSTEM_PROMPT } from "./system.js"
 
 interface TranslatePromptOptions {
   text: string
   tone: ToneSettings
-  context: string[]
+  context: TranslationPair[]
   userInstruction?: string
   concise?: boolean
+  previousTranslation?: string
 }
 
 export function buildTranslatePrompt(options: TranslatePromptOptions): string {
-  const { text, tone, context, userInstruction, concise } = options
+  const { text, tone, context, userInstruction, concise, previousTranslation } = options
 
   const parts: string[] = []
 
@@ -35,10 +37,6 @@ export function buildTranslatePrompt(options: TranslatePromptOptions): string {
     styleLines.push("- Use general, everyday language")
   }
 
-  if (concise) {
-    styleLines.push("- Make the translation more concise while preserving meaning")
-  }
-
   parts.push(`Style settings:\n${styleLines.join("\n")}`)
 
   // User instruction
@@ -46,10 +44,26 @@ export function buildTranslatePrompt(options: TranslatePromptOptions): string {
     parts.push(`User instruction:\n${userInstruction}`)
   }
 
-  // Previous context (translation outputs only)
-  if (context.length > 0) {
-    const contextText = context.slice(-5).join("\n---\n") // Last 5 translations
-    parts.push(`Previous translations for context:\n${contextText}`)
+  // Concise translation: show previous translation and specific instructions
+  if (concise) {
+    parts.push(
+      [
+        "Make this translation more concise. The previous translation was:",
+        previousTranslation,
+        "",
+        "You may:",
+        "- Remove redundant expressions and filler words",
+        "- Simplify sentence structures",
+        "- Omit minor details that don't change the core message",
+        "- Prioritize brevity over completeness",
+      ].join("\n"),
+    )
+  } else if (context.length > 0) {
+    // Normal translation: show source+translation pairs as context
+    const pairs = context
+      .slice(-5)
+      .map((pair) => `Original: ${pair.source}\nTranslation: ${pair.translation}`)
+    parts.push(`Previous translations for reference:\n${pairs.join("\n---\n")}`)
   }
 
   // Text to translate

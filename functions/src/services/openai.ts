@@ -11,14 +11,17 @@ export function getOpenAIClient(apiKey: string): OpenAI {
   return openaiClient
 }
 
+import type { TranslationPair } from "./database.js"
+
 interface TranslateOptions {
   apiKey: string
   text: string
   model: Model
   tone: ToneSettings
-  context: string[]
+  context: TranslationPair[]
   userInstruction?: string
   concise?: boolean
+  previousTranslation?: string
 }
 
 export interface SessionMetadata {
@@ -61,7 +64,8 @@ Example: {"description": "최신 SF 영화에 대한 상세 리뷰", "username":
 }
 
 export async function translate(options: TranslateOptions): Promise<string> {
-  const { apiKey, text, model, tone, context, userInstruction, concise } = options
+  const { apiKey, text, model, tone, context, userInstruction, concise, previousTranslation } =
+    options
 
   const client = getOpenAIClient(apiKey)
 
@@ -71,6 +75,7 @@ export async function translate(options: TranslateOptions): Promise<string> {
     context,
     userInstruction,
     concise,
+    previousTranslation,
   })
 
   const response = await client.chat.completions.create({

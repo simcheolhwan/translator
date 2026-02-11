@@ -168,22 +168,54 @@ export async function updateMessage(
   await updateSessionTimestamp(userId, sessionId)
 }
 
-export async function getTranslationContext(userId: string, sessionId: string): Promise<string[]> {
+export interface TranslationPair {
+  source: string
+  translation: string
+}
+
+export async function getTranslationContext(
+  userId: string,
+  sessionId: string,
+): Promise<TranslationPair[]> {
   const db = getFirebaseDatabase()
   const messagesRef = db.ref(`users/${userId}/sessions/${sessionId}/messages`)
   const snapshot = await messagesRef.orderByChild("createdAt").get()
 
   if (!snapshot.exists()) return []
 
-  const translations: string[] = []
+  const messages: Array<{ type: string; content: string; parentId?: string }> = []
   snapshot.forEach((child) => {
     const data = child.val()
-    if (data.type === "translation") {
-      translations.push(data.content)
-    }
+    messages.push({ type: data.type, content: data.content, parentId: data.parentId })
   })
 
-  return translations
+  const pairs: TranslationPair[] = []
+  for (let i = 0; i < messages.length; i++) {
+    const msg = messages[i]
+    // Skip retranslations (translations with parentId)
+    if (msg.type === "translation" && !msg.parentId) {
+      // Find the preceding source message
+      const source = i > 0 && messages[i - 1].type === "source" ? messages[i - 1].content : ""
+      if (source) {
+        pairs.push({ source, translation: msg.content })
+      }
+    }
+  }
+
+  return pairs
+}
+
+export async function getMessageContent(
+  userId: string,
+  sessionId: string,
+  messageId: string,
+): Promise<string> {
+  const db = getFirebaseDatabase()
+  const messageRef = db.ref(`users/${userId}/sessions/${sessionId}/messages/${messageId}`)
+  const snapshot = await messageRef.get()
+
+  if (!snapshot.exists()) return ""
+  return snapshot.val().content || ""
 }
 
 // Settings operations

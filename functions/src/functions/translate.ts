@@ -19,6 +19,7 @@ import {
   updateMessage,
   updateSessionMetadata,
   getTranslationContext,
+  getMessageContent,
   getUserSettings,
 } from "../services/database.js"
 import { initializeFirebase } from "../services/firebase.js"
@@ -33,14 +34,23 @@ interface TranslateInBackgroundParams {
   model: Model
   tone: ToneSettings
   concise?: boolean
+  parentMessageId?: string
 }
 
 async function translateInBackground(params: TranslateInBackgroundParams): Promise<void> {
-  const { apiKey, userId, sessionId, messageId, text, model, tone, concise } = params
+  const { apiKey, userId, sessionId, messageId, text, model, tone, concise, parentMessageId } =
+    params
 
   try {
-    const context = await getTranslationContext(userId, sessionId)
     const settings = await getUserSettings(userId)
+
+    let previousTranslation: string | undefined
+    let context = await getTranslationContext(userId, sessionId)
+
+    if (concise) {
+      previousTranslation = await getMessageContent(userId, sessionId, parentMessageId!)
+      context = []
+    }
 
     const translatedText = await translate({
       apiKey,
@@ -50,6 +60,7 @@ async function translateInBackground(params: TranslateInBackgroundParams): Promi
       context,
       userInstruction: settings?.globalInstruction,
       concise,
+      previousTranslation,
     })
 
     await updateMessage(userId, sessionId, messageId, {
@@ -164,6 +175,7 @@ export const translateFunction = onRequest(
             model,
             tone,
             concise,
+            parentMessageId,
           }).catch(console.error)
         } catch (error) {
           console.error("Translation error:", error)
