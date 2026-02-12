@@ -45,6 +45,16 @@
   "warning.sessionTooLong": "This session is getting long. Consider starting a new session for better results.",
   "warning.newSession": "Start new session",
 
+  "benchmark.title": "Benchmark",
+  "benchmark.placeholder": "Enter text to translate…",
+  "benchmark.selectModels": "Select Models",
+  "benchmark.run": "Run Benchmark",
+  "benchmark.running": "Running…",
+  "benchmark.duration": "Duration",
+  "benchmark.error": "Error",
+  "benchmark.noModels": "Please select at least one model.",
+  "benchmark.noText": "Please enter text to translate.",
+
   "language.en": "English",
   "language.ko": "Korean"
 }

@@ -1,9 +1,11 @@
 export const MODELS = [
   "gpt-5.2",
+  "gpt-5-mini",
+  "gpt-5-nano",
   "claude-opus-4-6",
-  "claude-sonnet-4-5-20250929",
-  "gemini-3-pro",
-  "gemini-3-flash",
+  "claude-sonnet-4-5",
+  "gemini-3-pro-preview",
+  "gemini-3-flash-preview",
 ] as const
 export type Model = (typeof MODELS)[number]
 export const DEFAULT_MODEL: Model = "gpt-5.2"

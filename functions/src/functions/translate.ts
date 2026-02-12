@@ -12,7 +12,7 @@ import { authMiddleware } from "../middleware/auth.js"
 import { allowedEmailsMiddleware } from "../middleware/allowedEmails.js"
 import { openaiApiKey, claudeApiKey, geminiApiKey } from "../lib/config.js"
 import { FUNCTION_REGION } from "../lib/constants.js"
-import { getProvider } from "../shared/constants.js"
+import { getApiKey } from "../lib/apiKeys.js"
 import { translate, generateSessionMetadata } from "../services/llm.js"
 import {
   createSession,
@@ -97,18 +97,6 @@ const translateSchema = z.object({
   concise: z.boolean().optional(),
   parentMessageId: z.string().optional(),
 })
-
-function getApiKey(model: Model): string {
-  const provider = getProvider(model)
-  switch (provider) {
-    case "claude":
-      return process.env.CLAUDE_API_KEY || claudeApiKey.value()
-    case "gemini":
-      return process.env.GEMINI_API_KEY || geminiApiKey.value()
-    default:
-      return process.env.OPENAI_API_KEY || openaiApiKey.value()
-  }
-}
 
 export const translateFunction = onRequest(
   { region: FUNCTION_REGION, secrets: [openaiApiKey, claudeApiKey, geminiApiKey], cors: true },

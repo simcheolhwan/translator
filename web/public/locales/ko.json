@@ -45,6 +45,16 @@
   "warning.sessionTooLong": "세션이 길어지고 있습니다. 더 나은 결과를 위해 새 세션을 시작하세요.",
   "warning.newSession": "새 세션 시작",
 
+  "benchmark.title": "벤치마크",
+  "benchmark.placeholder": "번역할 텍스트를 입력하세요…",
+  "benchmark.selectModels": "모델 선택",
+  "benchmark.run": "벤치마크 실행",
+  "benchmark.running": "실행 중…",
+  "benchmark.duration": "소요 시간",
+  "benchmark.error": "오류",
+  "benchmark.noModels": "최소 하나의 모델을 선택하세요.",
+  "benchmark.noText": "번역할 텍스트를 입력하세요.",
+
   "language.en": "English",
   "language.ko": "한국어"
 }

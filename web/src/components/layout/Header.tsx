@@ -1,4 +1,4 @@
-import { Languages, Settings } from "lucide-react"
+import { Languages, Settings, Timer } from "lucide-react"
 import { Link } from "@tanstack/react-router"
 import { useAuth } from "@/hooks/useAuth"
 import { useLocale } from "@/hooks/useLocale"
@@ -32,9 +32,22 @@ export function Header() {
         </button>
 
         {isAuthenticated && (
-          <Link to="/settings" className={styles.settingsButton} aria-label={t("header.settings")}>
-            <Settings size={20} />
-          </Link>
+          <>
+            <Link
+              to="/benchmark"
+              className={styles.settingsButton}
+              aria-label={t("benchmark.title")}
+            >
+              <Timer size={20} />
+            </Link>
+            <Link
+              to="/settings"
+              className={styles.settingsButton}
+              aria-label={t("header.settings")}
+            >
+              <Settings size={20} />
+            </Link>
+          </>
         )}
       </div>
     </header>
