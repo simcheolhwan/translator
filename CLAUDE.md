@@ -79,7 +79,7 @@ web과 functions가 공유하는 코드. functions 패키지 안에 위치하며
 
 - Cloud Functions v2 (`onRequest`), 리전: `asia-northeast3`
 - 미들웨어 체인: auth → allowedEmails → handler
-- LLM API 키: `defineSecret`으로 관리 (OPENAI_API_KEY, CLAUDE_API_KEY, GEMINI_API_KEY)
+- LLM API 키: `defineSecret`으로 관리 (OPENAI_API_KEY, CLAUDE_API_KEY, GEMINI_API_KEY). 로컬 개발 시 `.secret.local`에 작성
 - `functions/src/services/` — llm.ts(라우터), openai.ts, claude.ts, gemini.ts, firebase.ts, database.ts
 - `functions/src/prompts/` — 번역 프롬프트 빌더 (buildTranslatePrompt)
 - `functions/src/lib/` — 설정 관리 (defineSecret, defineString)

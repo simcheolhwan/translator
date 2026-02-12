@@ -61,11 +61,15 @@ cp web/.env.example web/.env
 #### Functions (로컬 개발)
 
 ```bash
-cp functions/.env.example functions/.env.local
+# 일반 설정 (.env)
+cp functions/.env.example functions/.env
+# ALLOWED_EMAILS=your-email@gmail.com (비워두면 모든 사용자 허용)
+
+# LLM API 키 (.secret.local) — defineSecret과 .env 충돌 방지를 위해 반드시 분리
+cp functions/.secret.local.example functions/.secret.local
 # OPENAI_API_KEY=sk-...
 # CLAUDE_API_KEY=sk-ant-...
 # GEMINI_API_KEY=...
-# ALLOWED_EMAILS=your-email@gmail.com (비워두면 모든 사용자 허용)
 ```
 
 ### 4. 개발 서버 실행
@@ -117,17 +121,11 @@ firebase deploy --only functions
 
 ### 접근 제어 (ALLOWED_EMAILS)
 
-`functions/.env` 파일에서 허용 이메일 설정:
+`functions/.env` 파일에서 허용 이메일 설정 (`defineString` 사용):
 
 ```bash
 # functions/.env
 ALLOWED_EMAILS=user1@example.com,user2@example.com
-```
-
-또는 Firebase 시크릿으로 등록:
-
-```bash
-firebase functions:secrets:set ALLOWED_EMAILS
 ```
 
 ## 프로젝트 구조
