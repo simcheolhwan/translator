@@ -16,7 +16,7 @@ LLM 기반 채팅형 한영 번역 앱.
 ### 백엔드 (functions)
 
 - Google Cloud Functions (2세대)
-- OpenAI SDK
+- OpenAI / Anthropic / Google GenAI SDK
 - Firebase Realtime Database
 
 ### 공유 코드 (functions/src/shared)
@@ -63,6 +63,8 @@ cp web/.env.example web/.env
 ```bash
 cp functions/.env.example functions/.env.local
 # OPENAI_API_KEY=sk-...
+# CLAUDE_API_KEY=sk-ant-...
+# GEMINI_API_KEY=...
 # ALLOWED_EMAILS=your-email@gmail.com (비워두면 모든 사용자 허용)
 ```
 
@@ -96,8 +98,10 @@ pnpm --filter functions dev
 ### 초기 설정 (1회)
 
 ```bash
-# OpenAI API Key를 시크릿으로 등록
+# LLM API Key를 시크릿으로 등록
 firebase functions:secrets:set OPENAI_API_KEY
+firebase functions:secrets:set CLAUDE_API_KEY
+firebase functions:secrets:set GEMINI_API_KEY
 ```
 
 ### 배포 실행
@@ -150,7 +154,7 @@ translator/
 │       ├── lib/          # 설정 관리 (defineSecret, defineString)
 │       ├── middleware/   # 인증, CORS, 이메일 화이트리스트
 │       ├── prompts/      # 번역 프롬프트 빌더 (buildTranslatePrompt)
-│       ├── services/     # OpenAI, Firebase, Database
+│       ├── services/     # LLM (OpenAI, Claude, Gemini), Firebase, Database
 │       └── types/        # TypeScript 타입
 ├── firebase.json         # Firebase 설정
 └── pnpm-workspace.yaml   # 모노레포 워크스페이스 (web, functions)

@@ -1,32 +1,14 @@
 import OpenAI from "openai"
-import type { Model, ToneSettings } from "../shared/constants.js"
 import { buildTranslatePrompt, getSystemMessages } from "../prompts/translate.js"
-import type { TranslationPair } from "./database.js"
+import type { TranslateOptions, SessionMetadata } from "./llm.js"
 
 let openaiClient: OpenAI | null = null
 
-export function getOpenAIClient(apiKey: string): OpenAI {
+function getClient(apiKey: string): OpenAI {
   if (!openaiClient) {
     openaiClient = new OpenAI({ apiKey })
   }
   return openaiClient
-}
-
-interface TranslateOptions {
-  apiKey: string
-  text: string
-  isKorean: boolean
-  model: Model
-  tone: ToneSettings
-  context: TranslationPair[]
-  userInstruction?: string
-  concise?: boolean
-  previousTranslation?: string
-}
-
-export interface SessionMetadata {
-  username?: string
-  description: string
 }
 
 export async function generateSessionMetadata(
@@ -34,7 +16,7 @@ export async function generateSessionMetadata(
   text: string,
   model: string,
 ): Promise<SessionMetadata> {
-  const client = getOpenAIClient(apiKey)
+  const client = getClient(apiKey)
 
   const response = await client.chat.completions.create({
     model,
@@ -76,7 +58,7 @@ export async function translate(options: TranslateOptions): Promise<string> {
     previousTranslation,
   } = options
 
-  const client = getOpenAIClient(apiKey)
+  const client = getClient(apiKey)
 
   const userPrompt = buildTranslatePrompt({
     text,

@@ -32,7 +32,7 @@ firebase deploy --only functions
 ### 번역 흐름 (핵심 데이터 플로우)
 
 1. 클라이언트: 텍스트 입력 → `detectLanguage`로 한/영 판별 → `POST /translate` 호출
-2. Cloud Function: 세션 생성(없으면) → 소스 메시지 저장 → 빈 번역 메시지(status: pending) 저장 → **즉시 응답** → 백그라운드에서 OpenAI 번역 수행 → 번역 메시지 업데이트(status: completed)
+2. Cloud Function: 세션 생성(없으면) → 소스 메시지 저장 → 빈 번역 메시지(status: pending) 저장 → **즉시 응답** → 백그라운드에서 LLM 번역 수행 (모델별 provider 분기) → 번역 메시지 업데이트(status: completed)
 3. 클라이언트: Firebase Realtime Database `onValue` 리스너로 번역 결과 실시간 수신
 
 ### CRUD 아키텍처
@@ -79,7 +79,8 @@ web과 functions가 공유하는 코드. functions 패키지 안에 위치하며
 
 - Cloud Functions v2 (`onRequest`), 리전: `asia-northeast3`
 - 미들웨어 체인: auth → allowedEmails → handler
-- OpenAI API 키: `defineSecret`으로 관리
+- LLM API 키: `defineSecret`으로 관리 (OPENAI_API_KEY, CLAUDE_API_KEY, GEMINI_API_KEY)
+- `functions/src/services/` — llm.ts(라우터), openai.ts, claude.ts, gemini.ts, firebase.ts, database.ts
 - `functions/src/prompts/` — 번역 프롬프트 빌더 (buildTranslatePrompt)
 - `functions/src/lib/` — 설정 관리 (defineSecret, defineString)
 - `functions/src/shared/` — web과 공유하는 타입, 상수, 스키마, 프롬프트

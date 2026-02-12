@@ -1,6 +1,20 @@
-export const MODELS = ["gpt-5.2"] as const
+export const MODELS = [
+  "gpt-5.2",
+  "claude-opus-4-6",
+  "claude-sonnet-4-5-20250929",
+  "gemini-3-pro",
+  "gemini-3-flash",
+] as const
 export type Model = (typeof MODELS)[number]
 export const DEFAULT_MODEL: Model = "gpt-5.2"
+
+export type Provider = "openai" | "claude" | "gemini"
+
+export function getProvider(model: Model): Provider {
+  if (model.startsWith("claude-")) return "claude"
+  if (model.startsWith("gemini-")) return "gemini"
+  return "openai"
+}
 
 export const TONE_OPTIONS = {
   translationStyle: ["paraphrase", "literal"] as const,

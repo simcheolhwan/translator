@@ -10,9 +10,10 @@ import {
 import { z } from "zod"
 import { authMiddleware } from "../middleware/auth.js"
 import { allowedEmailsMiddleware } from "../middleware/allowedEmails.js"
-import { openaiApiKey } from "../lib/config.js"
+import { openaiApiKey, claudeApiKey, geminiApiKey } from "../lib/config.js"
 import { FUNCTION_REGION } from "../lib/constants.js"
-import { translate, generateSessionMetadata } from "../services/openai.js"
+import { getProvider } from "../shared/constants.js"
+import { translate, generateSessionMetadata } from "../services/llm.js"
 import {
   createSession,
   addMessage,
@@ -97,8 +98,20 @@ const translateSchema = z.object({
   parentMessageId: z.string().optional(),
 })
 
+function getApiKey(model: Model): string {
+  const provider = getProvider(model)
+  switch (provider) {
+    case "claude":
+      return process.env.CLAUDE_API_KEY || claudeApiKey.value()
+    case "gemini":
+      return process.env.GEMINI_API_KEY || geminiApiKey.value()
+    default:
+      return process.env.OPENAI_API_KEY || openaiApiKey.value()
+  }
+}
+
 export const translateFunction = onRequest(
-  { region: FUNCTION_REGION, secrets: [openaiApiKey], cors: true },
+  { region: FUNCTION_REGION, secrets: [openaiApiKey, claudeApiKey, geminiApiKey], cors: true },
   async (req, res) => {
     // Initialize Firebase
     initializeFirebase()
@@ -137,7 +150,7 @@ export const translateFunction = onRequest(
             sessionId = session.id
 
             // Generate metadata in background and update session (no await)
-            generateSessionMetadata(openaiApiKey.value(), text, model)
+            generateSessionMetadata(getApiKey(model), text, model)
               .then((metadata) => updateSessionMetadata(userId, sessionId!, metadata))
               .catch(console.error)
           }
@@ -174,7 +187,7 @@ export const translateFunction = onRequest(
 
           // Perform translation in background (no await)
           translateInBackground({
-            apiKey: openaiApiKey.value(),
+            apiKey: getApiKey(model),
             userId,
             sessionId,
             messageId: translationMessage.id,
