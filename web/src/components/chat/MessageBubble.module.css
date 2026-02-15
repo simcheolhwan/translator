@@ -75,6 +75,14 @@
   align-items: center;
 }
 
+.duration {
+  margin-left: auto;
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  padding: var(--space-1) var(--space-2);
+}
+
 /* Error message */
 .errorContainer {
   margin-bottom: var(--space-4);

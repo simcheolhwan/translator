@@ -12,6 +12,7 @@ export interface Message {
   parentId?: string
   createdAt: number
   errorMessage?: string
+  durationMs?: number
 }
 
 export interface Session {

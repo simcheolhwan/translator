@@ -89,6 +89,7 @@ export interface UpdateMessageData {
   content?: string
   status?: MessageStatus
   errorMessage?: string
+  durationMs?: number
 }
 
 export async function updateMessage(
@@ -104,6 +105,7 @@ export async function updateMessage(
   if (data.content !== undefined) updates.content = data.content
   if (data.status !== undefined) updates.status = data.status
   if (data.errorMessage !== undefined) updates.errorMessage = data.errorMessage
+  if (data.durationMs !== undefined) updates.durationMs = data.durationMs
 
   await messageRef.update(updates)
   await updateSessionTimestamp(userId, sessionId)

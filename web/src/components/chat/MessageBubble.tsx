@@ -59,6 +59,9 @@ export function MessageBubble({ message, onRetranslate }: MessageBubbleProps) {
             <span>{t("chat.retranslate")}</span>
           </button>
         )}
+        {message.durationMs != null && (
+          <span className={styles.duration}>{(message.durationMs / 1000).toFixed(2)}s</span>
+        )}
       </div>
     </div>
   )

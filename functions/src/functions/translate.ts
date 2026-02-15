@@ -105,7 +105,8 @@ export const translateFunction = onRequest(
                 : Promise.resolve(undefined),
             ])
 
-            return translate({
+            const start = performance.now()
+            const result = await translate({
               apiKey,
               text,
               isKorean,
@@ -116,6 +117,8 @@ export const translateFunction = onRequest(
               concise,
               previousTranslation,
             })
+            const durationMs = Math.round(performance.now() - start)
+            return { result, durationMs }
           })()
 
           // Generate metadata in background for new sessions
@@ -140,10 +143,11 @@ export const translateFunction = onRequest(
           // Update message when translation completes (background)
           translationPromise
             .then(
-              async (translatedText) => {
+              async ({ result: translatedText, durationMs }) => {
                 await updateMessage(userId, sessionId!, translationMessage.id, {
                   content: translatedText,
                   status: "completed",
+                  durationMs,
                 })
               },
               async (error) => {
