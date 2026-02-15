@@ -1,12 +1,6 @@
 import { onRequest } from "firebase-functions/v2/https"
 import { toneSettingsSchema } from "../shared/schemas/index.js"
-import {
-  MODELS,
-  DEFAULT_MODEL,
-  DEFAULT_TONE,
-  type Model,
-  type ToneSettings,
-} from "../shared/constants.js"
+import { MODELS, DEFAULT_MODEL, DEFAULT_TONE } from "../shared/constants.js"
 import { z } from "zod"
 import { authMiddleware } from "../middleware/auth.js"
 import { allowedEmailsMiddleware } from "../middleware/allowedEmails.js"
@@ -25,68 +19,6 @@ import {
 } from "../services/database.js"
 import { initializeFirebase } from "../services/firebase.js"
 import type { AuthenticatedRequest } from "../types/request.js"
-
-interface TranslateInBackgroundParams {
-  apiKey: string
-  userId: string
-  sessionId: string
-  messageId: string
-  text: string
-  isKorean: boolean
-  model: Model
-  tone: ToneSettings
-  concise?: boolean
-  parentMessageId?: string
-}
-
-async function translateInBackground(params: TranslateInBackgroundParams): Promise<void> {
-  const {
-    apiKey,
-    userId,
-    sessionId,
-    messageId,
-    text,
-    isKorean,
-    model,
-    tone,
-    concise,
-    parentMessageId,
-  } = params
-
-  try {
-    const settings = await getUserSettings(userId)
-
-    let previousTranslation: string | undefined
-    let context = await getTranslationContext(userId, sessionId)
-
-    if (concise) {
-      previousTranslation = await getMessageContent(userId, sessionId, parentMessageId!)
-      context = []
-    }
-
-    const translatedText = await translate({
-      apiKey,
-      text,
-      isKorean,
-      model,
-      tone,
-      context,
-      userInstruction: settings?.globalInstruction,
-      concise,
-      previousTranslation,
-    })
-
-    await updateMessage(userId, sessionId, messageId, {
-      content: translatedText,
-      status: "completed",
-    })
-  } catch (error) {
-    await updateMessage(userId, sessionId, messageId, {
-      status: "error",
-      errorMessage: error instanceof Error ? error.message : "Translation failed",
-    })
-  }
-}
 
 const translateSchema = z.object({
   sessionId: z.string().optional(),
@@ -132,60 +64,96 @@ export const translateFunction = onRequest(
           let { sessionId } = parseResult.data
 
           // Create new session if not provided
-          if (!sessionId) {
-            // Create session immediately with empty description
+          const isNewSession = !sessionId
+          if (isNewSession) {
+            // push() generates the key locally (synchronous), set() is async
             const session = await createSession(userId, { description: "" })
             sessionId = session.id
-
-            // Generate metadata in background and update session (no await)
-            generateSessionMetadata(getApiKey(model), text, model)
-              .then((metadata) => updateSessionMetadata(userId, sessionId!, metadata))
-              .catch(console.error)
           }
 
-          // Save source message only for new translations (not retranslate)
-          let sourceMessageId: string | undefined
-          if (!parentMessageId) {
-            const sourceMessage = await addMessage(userId, sessionId, {
-              type: "source",
-              content: text,
-              status: "completed",
-              createdAt: Date.now(),
-            })
-            sourceMessageId = sourceMessage.id
-          }
+          const now = Date.now()
+          const apiKey = getApiKey(model)
 
-          // Save translation message immediately (status: pending)
-          const translationMessage = await addMessage(userId, sessionId, {
+          // Start DB writes (no await — run in parallel)
+          const sourceMessagePromise = !parentMessageId
+            ? addMessage(userId, sessionId!, {
+                type: "source",
+                content: text,
+                status: "completed",
+                createdAt: now,
+              })
+            : null
+
+          const translationMessagePromise = addMessage(userId, sessionId!, {
             type: "translation",
             content: "",
             status: "pending",
             model,
             tone,
             parentId: parentMessageId,
-            createdAt: Date.now(),
+            createdAt: now + 1,
           })
 
-          // Respond immediately with session and message IDs
+          // Start translation in parallel with DB writes
+          // DB reads (settings, context) are also parallelized with each other
+          const translationPromise = (async () => {
+            const [settings, context, previousTranslation] = await Promise.all([
+              getUserSettings(userId),
+              concise ? Promise.resolve([]) : getTranslationContext(userId, sessionId!),
+              concise
+                ? getMessageContent(userId, sessionId!, parentMessageId!)
+                : Promise.resolve(undefined),
+            ])
+
+            return translate({
+              apiKey,
+              text,
+              isKorean,
+              model,
+              tone,
+              context,
+              userInstruction: settings?.globalInstruction,
+              concise,
+              previousTranslation,
+            })
+          })()
+
+          // Generate metadata in background for new sessions
+          if (isNewSession) {
+            generateSessionMetadata(apiKey, text, model)
+              .then((metadata) => updateSessionMetadata(userId, sessionId!, metadata))
+              .catch(console.error)
+          }
+
+          // Wait for message IDs to respond to client
+          const [translationMessage, sourceMessage] = await Promise.all([
+            translationMessagePromise,
+            sourceMessagePromise ?? Promise.resolve(null),
+          ])
+
           res.json({
             sessionId,
-            sourceMessageId,
+            sourceMessageId: sourceMessage?.id,
             translationMessageId: translationMessage.id,
           })
 
-          // Perform translation in background (no await)
-          translateInBackground({
-            apiKey: getApiKey(model),
-            userId,
-            sessionId,
-            messageId: translationMessage.id,
-            text,
-            isKorean,
-            model,
-            tone,
-            concise,
-            parentMessageId,
-          }).catch(console.error)
+          // Update message when translation completes (background)
+          translationPromise
+            .then(
+              async (translatedText) => {
+                await updateMessage(userId, sessionId!, translationMessage.id, {
+                  content: translatedText,
+                  status: "completed",
+                })
+              },
+              async (error) => {
+                await updateMessage(userId, sessionId!, translationMessage.id, {
+                  status: "error",
+                  errorMessage: error instanceof Error ? error.message : "Translation failed",
+                })
+              },
+            )
+            .catch(console.error)
         } catch (error) {
           console.error("Translation error:", error)
           res.status(500).json({

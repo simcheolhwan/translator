@@ -4,8 +4,8 @@
     ".write": false,
     "users": {
       "$uid": {
-        ".read": "auth != null && auth.uid == $uid && auth.uid == 'ALLOWED_UID_HERE'",
-        ".write": "auth != null && auth.uid == $uid && auth.uid == 'ALLOWED_UID_HERE'",
+        ".read": "auth != null && auth.uid == $uid && auth.uid == 'vt0GDnfxUONyYAv6xGLKl3SicAp2'",
+        ".write": "auth != null && auth.uid == $uid && auth.uid == 'vt0GDnfxUONyYAv6xGLKl3SicAp2'",
         "sessions": {
           ".indexOn": ["updatedAt"],
           "$sessionId": {
