@@ -71,27 +71,18 @@ export const translateFunction = onRequest(
             sessionId = session.id
           }
 
-          // Generate message IDs and start all work in parallel
           const now = Date.now()
           const apiKey = getApiKey(model)
 
-          // Prepare source and translation message data
-          let sourceMessageId: string | undefined
-          const dbWrites: Promise<unknown>[] = []
-
-          if (!parentMessageId) {
-            const sourceMessage = addMessage(userId, sessionId!, {
-              type: "source",
-              content: text,
-              status: "completed",
-              createdAt: now,
-            })
-            dbWrites.push(
-              sourceMessage.then((m) => {
-                sourceMessageId = m.id
-              }),
-            )
-          }
+          // Start DB writes (no await — run in parallel)
+          const sourceMessagePromise = !parentMessageId
+            ? addMessage(userId, sessionId!, {
+                type: "source",
+                content: text,
+                status: "completed",
+                createdAt: now,
+              })
+            : null
 
           const translationMessagePromise = addMessage(userId, sessionId!, {
             type: "translation",
@@ -102,35 +93,29 @@ export const translateFunction = onRequest(
             parentId: parentMessageId,
             createdAt: now + 1,
           })
-          dbWrites.push(translationMessagePromise)
 
-          // Start translation immediately in parallel with DB writes
+          // Start translation in parallel with DB writes
+          // DB reads (settings, context) are also parallelized with each other
           const translationPromise = (async () => {
-            try {
-              const settings = await getUserSettings(userId)
+            const [settings, context, previousTranslation] = await Promise.all([
+              getUserSettings(userId),
+              concise ? Promise.resolve([]) : getTranslationContext(userId, sessionId!),
+              concise
+                ? getMessageContent(userId, sessionId!, parentMessageId!)
+                : Promise.resolve(undefined),
+            ])
 
-              let previousTranslation: string | undefined
-              let context = await getTranslationContext(userId, sessionId!)
-
-              if (concise) {
-                previousTranslation = await getMessageContent(userId, sessionId!, parentMessageId!)
-                context = []
-              }
-
-              return await translate({
-                apiKey,
-                text,
-                isKorean,
-                model,
-                tone,
-                context,
-                userInstruction: settings?.globalInstruction,
-                concise,
-                previousTranslation,
-              })
-            } catch (error) {
-              return { error }
-            }
+            return translate({
+              apiKey,
+              text,
+              isKorean,
+              model,
+              tone,
+              context,
+              userInstruction: settings?.globalInstruction,
+              concise,
+              previousTranslation,
+            })
           })()
 
           // Generate metadata in background for new sessions
@@ -140,32 +125,34 @@ export const translateFunction = onRequest(
               .catch(console.error)
           }
 
-          // Wait for message IDs to be ready for response
-          const [translationMessage] = await Promise.all([translationMessagePromise, ...dbWrites])
+          // Wait for message IDs to respond to client
+          const [translationMessage, sourceMessage] = await Promise.all([
+            translationMessagePromise,
+            sourceMessagePromise ?? Promise.resolve(null),
+          ])
 
-          // Respond immediately with session and message IDs
           res.json({
             sessionId,
-            sourceMessageId,
+            sourceMessageId: sourceMessage?.id,
             translationMessageId: translationMessage.id,
           })
 
-          // Wait for translation to complete and update message
+          // Update message when translation completes (background)
           translationPromise
-            .then(async (result) => {
-              if (result && typeof result === "object" && "error" in result) {
-                const error = (result as { error: unknown }).error
+            .then(
+              async (translatedText) => {
+                await updateMessage(userId, sessionId!, translationMessage.id, {
+                  content: translatedText,
+                  status: "completed",
+                })
+              },
+              async (error) => {
                 await updateMessage(userId, sessionId!, translationMessage.id, {
                   status: "error",
                   errorMessage: error instanceof Error ? error.message : "Translation failed",
                 })
-              } else {
-                await updateMessage(userId, sessionId!, translationMessage.id, {
-                  content: result as string,
-                  status: "completed",
-                })
-              }
-            })
+              },
+            )
             .catch(console.error)
         } catch (error) {
           console.error("Translation error:", error)
