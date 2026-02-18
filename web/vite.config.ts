@@ -5,6 +5,7 @@ import { resolve } from "path"
 
 export default defineConfig({
   plugins: [TanStackRouterVite(), react()],
+  server: { port: 7242 },
   resolve: {
     alias: {
       "@": resolve(__dirname, "./src"),
