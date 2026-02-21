@@ -1,8 +1,9 @@
 import { GoogleGenAI } from "@google/genai"
 import type { Model } from "../shared/constants.js"
 import { buildTranslatePrompt, getSystemMessages } from "../prompts/translate.js"
+import { GRAMMAR_CHECK_SYSTEM_PROMPT, buildGrammarCheckPrompt } from "../prompts/grammar.js"
 import { SESSION_METADATA_PROMPT } from "../prompts/metadata.js"
-import type { TranslateOptions, SessionMetadata } from "./llm.js"
+import type { TranslateOptions, GrammarCheckOptions, SessionMetadata } from "./llm.js"
 
 let genaiClient: GoogleGenAI | null = null
 
@@ -11,6 +12,27 @@ function getClient(apiKey: string): GoogleGenAI {
     genaiClient = new GoogleGenAI({ apiKey })
   }
   return genaiClient
+}
+
+export async function grammarCheck(options: GrammarCheckOptions): Promise<string> {
+  const { apiKey, text, model } = options
+  const client = getClient(apiKey)
+
+  const response = await client.models.generateContent({
+    model,
+    contents: buildGrammarCheckPrompt(text),
+    config: {
+      systemInstruction: GRAMMAR_CHECK_SYSTEM_PROMPT,
+      maxOutputTokens: 4096,
+    },
+  })
+
+  const content = response.text
+  if (!content) {
+    throw new Error("No response received from Gemini")
+  }
+
+  return content.trim()
 }
 
 export async function translate(options: TranslateOptions): Promise<string> {

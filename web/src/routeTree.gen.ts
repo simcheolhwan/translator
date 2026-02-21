@@ -10,13 +10,20 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as GrammarRouteImport } from './routes/grammar'
 import { Route as BenchmarkRouteImport } from './routes/benchmark'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as GrammarIndexRouteImport } from './routes/grammar.index'
 import { Route as SessionSessionIdRouteImport } from './routes/session.$sessionId'
 
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GrammarRoute = GrammarRouteImport.update({
+  id: '/grammar',
+  path: '/grammar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BenchmarkRoute = BenchmarkRouteImport.update({
@@ -29,6 +36,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GrammarIndexRoute = GrammarIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => GrammarRoute,
+} as any)
 const SessionSessionIdRoute = SessionSessionIdRouteImport.update({
   id: '/session/$sessionId',
   path: '/session/$sessionId',
@@ -38,33 +50,52 @@ const SessionSessionIdRoute = SessionSessionIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/benchmark': typeof BenchmarkRoute
+  '/grammar': typeof GrammarRouteWithChildren
   '/settings': typeof SettingsRoute
   '/session/$sessionId': typeof SessionSessionIdRoute
+  '/grammar/': typeof GrammarIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/benchmark': typeof BenchmarkRoute
   '/settings': typeof SettingsRoute
   '/session/$sessionId': typeof SessionSessionIdRoute
+  '/grammar': typeof GrammarIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/benchmark': typeof BenchmarkRoute
+  '/grammar': typeof GrammarRouteWithChildren
   '/settings': typeof SettingsRoute
   '/session/$sessionId': typeof SessionSessionIdRoute
+  '/grammar/': typeof GrammarIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/benchmark' | '/settings' | '/session/$sessionId'
+  fullPaths:
+    | '/'
+    | '/benchmark'
+    | '/grammar'
+    | '/settings'
+    | '/session/$sessionId'
+    | '/grammar/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/benchmark' | '/settings' | '/session/$sessionId'
-  id: '__root__' | '/' | '/benchmark' | '/settings' | '/session/$sessionId'
+  to: '/' | '/benchmark' | '/settings' | '/session/$sessionId' | '/grammar'
+  id:
+    | '__root__'
+    | '/'
+    | '/benchmark'
+    | '/grammar'
+    | '/settings'
+    | '/session/$sessionId'
+    | '/grammar/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   BenchmarkRoute: typeof BenchmarkRoute
+  GrammarRoute: typeof GrammarRouteWithChildren
   SettingsRoute: typeof SettingsRoute
   SessionSessionIdRoute: typeof SessionSessionIdRoute
 }
@@ -76,6 +107,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/grammar': {
+      id: '/grammar'
+      path: '/grammar'
+      fullPath: '/grammar'
+      preLoaderRoute: typeof GrammarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/benchmark': {
@@ -92,6 +130,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/grammar/': {
+      id: '/grammar/'
+      path: '/'
+      fullPath: '/grammar/'
+      preLoaderRoute: typeof GrammarIndexRouteImport
+      parentRoute: typeof GrammarRoute
+    }
     '/session/$sessionId': {
       id: '/session/$sessionId'
       path: '/session/$sessionId'
@@ -102,9 +147,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface GrammarRouteChildren {
+  GrammarIndexRoute: typeof GrammarIndexRoute
+}
+
+const GrammarRouteChildren: GrammarRouteChildren = {
+  GrammarIndexRoute: GrammarIndexRoute,
+}
+
+const GrammarRouteWithChildren =
+  GrammarRoute._addFileChildren(GrammarRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   BenchmarkRoute: BenchmarkRoute,
+  GrammarRoute: GrammarRouteWithChildren,
   SettingsRoute: SettingsRoute,
   SessionSessionIdRoute: SessionSessionIdRoute,
 }

@@ -1,0 +1,95 @@
+/* Source message — reuse from MessageBubble */
+.sourceContainer {
+  composes: sourceContainer from "../chat/MessageBubble.module.css";
+}
+
+.sourceBubble {
+  composes: sourceBubble from "../chat/MessageBubble.module.css";
+}
+
+.sourceText {
+  composes: sourceText from "../chat/MessageBubble.module.css";
+}
+
+/* Result message */
+.resultContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.correctedContent {
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+}
+
+.correctedContent p {
+  margin-bottom: var(--space-3);
+}
+
+.correctedContent p:last-child {
+  margin-bottom: 0;
+}
+
+.correctedContent code {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  background-color: var(--bg-surface);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+
+/* Actions — reuse from MessageBubble */
+.actions {
+  composes: actions from "../chat/MessageBubble.module.css";
+}
+
+.duration {
+  composes: duration from "../chat/MessageBubble.module.css";
+}
+
+/* Explanation content */
+.explanation {
+  padding: var(--space-3);
+  background-color: var(--bg-surface);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--text-secondary);
+}
+
+.explanation p {
+  margin-bottom: var(--space-2);
+}
+
+.explanation p:last-child {
+  margin-bottom: 0;
+}
+
+.explanation ul {
+  list-style: disc;
+  padding-left: var(--space-4);
+}
+
+.explanation li {
+  margin-bottom: var(--space-1);
+}
+
+/* Error — reuse from MessageBubble */
+.errorContainer {
+  composes: errorContainer from "../chat/MessageBubble.module.css";
+}
+
+.errorBubble {
+  composes: errorBubble from "../chat/MessageBubble.module.css";
+}
+
+.errorIcon {
+  composes: errorIcon from "../chat/MessageBubble.module.css";
+}
+
+.errorText {
+  composes: errorText from "../chat/MessageBubble.module.css";
+}

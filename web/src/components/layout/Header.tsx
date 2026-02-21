@@ -1,4 +1,4 @@
-import { Languages, Settings, Timer } from "lucide-react"
+import { Languages, Settings, Timer, SpellCheck } from "lucide-react"
 import { Link } from "@tanstack/react-router"
 import { useAuth } from "@/hooks/useAuth"
 import { useLocale } from "@/hooks/useLocale"
@@ -33,6 +33,9 @@ export function Header() {
 
         {isAuthenticated && (
           <>
+            <Link to="/grammar" className={styles.settingsButton} aria-label={t("grammar.title")}>
+              <SpellCheck size={20} />
+            </Link>
             <Link
               to="/benchmark"
               className={styles.settingsButton}

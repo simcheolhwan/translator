@@ -45,6 +45,15 @@
   "warning.sessionTooLong": "This session is getting long. Consider starting a new session for better results.",
   "warning.newSession": "Start new session",
 
+  "grammar.title": "Grammar Check",
+  "grammar.description": "English Grammar Correction",
+  "grammar.placeholder": "Enter English text to check…",
+  "grammar.send": "Check",
+  "grammar.explanation": "Explanation",
+  "grammar.failed": "Grammar check failed",
+  "grammar.systemPrompt": "System Prompt",
+  "grammar.koreanWarning": "This is for English grammar check only. Please enter English text.",
+
   "benchmark.title": "Benchmark",
   "benchmark.placeholder": "Enter text to translate…",
   "benchmark.selectModels": "Select Models",

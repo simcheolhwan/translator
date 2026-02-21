@@ -1,0 +1,31 @@
+.form {
+  composes: form from "../chat/ChatInput.module.css";
+}
+
+.textarea {
+  composes: textarea from "../chat/ChatInput.module.css";
+}
+
+.toolbar {
+  composes: toolbar from "../chat/ChatInput.module.css";
+}
+
+.settings {
+  composes: settings from "../chat/ChatInput.module.css";
+}
+
+.actions {
+  composes: actions from "../chat/ChatInput.module.css";
+}
+
+.iconButton {
+  composes: iconButton from "../chat/ChatInput.module.css";
+}
+
+.submitButton {
+  composes: submitButton from "../chat/ChatInput.module.css";
+}
+
+.spinner {
+  composes: spinner from "../chat/ChatInput.module.css";
+}

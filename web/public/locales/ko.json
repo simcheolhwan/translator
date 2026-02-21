@@ -45,6 +45,15 @@
   "warning.sessionTooLong": "세션이 길어지고 있습니다. 더 나은 결과를 위해 새 세션을 시작하세요.",
   "warning.newSession": "새 세션 시작",
 
+  "grammar.title": "문법 체크",
+  "grammar.description": "영어 문법 교정",
+  "grammar.placeholder": "교정할 영어 문장을 입력하세요…",
+  "grammar.send": "체크",
+  "grammar.explanation": "설명",
+  "grammar.failed": "문법 체크 실패",
+  "grammar.systemPrompt": "시스템 프롬프트",
+  "grammar.koreanWarning": "영어 문법 검사 전용입니다. 영어 문장을 입력해 주세요.",
+
   "benchmark.title": "벤치마크",
   "benchmark.placeholder": "번역할 텍스트를 입력하세요…",
   "benchmark.selectModels": "모델 선택",

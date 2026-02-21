@@ -3,16 +3,25 @@ import { getProvider } from "../shared/constants.js"
 import type { TranslationPair } from "./database.js"
 import {
   translate as openaiTranslate,
+  grammarCheck as openaiGrammarCheck,
   generateSessionMetadata as openaiMetadata,
 } from "./openai.js"
 import {
   translate as claudeTranslate,
+  grammarCheck as claudeGrammarCheck,
   generateSessionMetadata as claudeMetadata,
 } from "./claude.js"
 import {
   translate as geminiTranslate,
+  grammarCheck as geminiGrammarCheck,
   generateSessionMetadata as geminiMetadata,
 } from "./gemini.js"
+
+export interface GrammarCheckOptions {
+  apiKey: string
+  text: string
+  model: Model
+}
 
 export interface TranslateOptions {
   apiKey: string
@@ -29,6 +38,18 @@ export interface TranslateOptions {
 export interface SessionMetadata {
   username?: string
   description: string
+}
+
+export async function grammarCheck(options: GrammarCheckOptions): Promise<string> {
+  const provider = getProvider(options.model)
+  switch (provider) {
+    case "claude":
+      return claudeGrammarCheck(options)
+    case "gemini":
+      return geminiGrammarCheck(options)
+    default:
+      return openaiGrammarCheck(options)
+  }
 }
 
 export async function translate(options: TranslateOptions): Promise<string> {

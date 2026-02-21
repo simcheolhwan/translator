@@ -1,8 +1,9 @@
 import Anthropic from "@anthropic-ai/sdk"
 import type { Model } from "../shared/constants.js"
 import { buildTranslatePrompt, getSystemMessages } from "../prompts/translate.js"
+import { GRAMMAR_CHECK_SYSTEM_PROMPT, buildGrammarCheckPrompt } from "../prompts/grammar.js"
 import { SESSION_METADATA_PROMPT } from "../prompts/metadata.js"
-import type { TranslateOptions, SessionMetadata } from "./llm.js"
+import type { TranslateOptions, GrammarCheckOptions, SessionMetadata } from "./llm.js"
 
 let anthropicClient: Anthropic | null = null
 
@@ -11,6 +12,25 @@ function getClient(apiKey: string): Anthropic {
     anthropicClient = new Anthropic({ apiKey })
   }
   return anthropicClient
+}
+
+export async function grammarCheck(options: GrammarCheckOptions): Promise<string> {
+  const { apiKey, text, model } = options
+  const client = getClient(apiKey)
+
+  const response = await client.messages.create({
+    model,
+    max_tokens: 4096,
+    system: GRAMMAR_CHECK_SYSTEM_PROMPT,
+    messages: [{ role: "user", content: buildGrammarCheckPrompt(text) }],
+  })
+
+  const block = response.content[0]
+  if (!block || block.type !== "text") {
+    throw new Error("No response received from Claude")
+  }
+
+  return block.text.trim()
 }
 
 export async function translate(options: TranslateOptions): Promise<string> {
