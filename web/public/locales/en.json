@@ -63,6 +63,7 @@
   "benchmark.error": "Error",
   "benchmark.noModels": "Please select at least one model.",
   "benchmark.noText": "Please enter text to translate.",
+  "benchmark.sample": "Sample",
 
   "language.en": "English",
   "language.ko": "Korean"

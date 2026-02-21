@@ -63,6 +63,7 @@
   "benchmark.error": "오류",
   "benchmark.noModels": "최소 하나의 모델을 선택하세요.",
   "benchmark.noText": "번역할 텍스트를 입력하세요.",
+  "benchmark.sample": "샘플",
 
   "language.en": "English",
   "language.ko": "한국어"
