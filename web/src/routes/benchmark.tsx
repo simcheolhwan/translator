@@ -1,4 +1,4 @@
-import { useState, useRef } from "react"
+import { useState, useRef, useCallback } from "react"
 import { createFileRoute } from "@tanstack/react-router"
 import { Loader2 } from "lucide-react"
 import { MODELS, DEFAULT_TONE, getProvider } from "functions/constants"
@@ -42,11 +42,18 @@ function BenchmarkPage() {
   const [loading, setLoading] = useState(false)
   const pendingCount = useRef(0)
 
+  const allModels = MODELS as readonly Model[]
+  const allSelected = allModels.length === selectedModels.length
+
   const toggleModel = (model: Model) => {
     setSelectedModels((prev) =>
       prev.includes(model) ? prev.filter((m) => m !== model) : [...prev, model],
     )
   }
+
+  const toggleAll = useCallback(() => {
+    setSelectedModels(allSelected ? [] : [...allModels])
+  }, [allSelected, allModels])
 
   const handleRun = async () => {
     if (!text.trim() || selectedModels.length === 0) return
@@ -139,7 +146,19 @@ function BenchmarkPage() {
       </div>
 
       <div className={styles.section}>
-        <h2 className={styles.sectionTitle}>{t("benchmark.selectModels")}</h2>
+        <div className={styles.sectionHeader}>
+          <h2 className={styles.sectionTitle}>{t("benchmark.selectModels")}</h2>
+          <label className={styles.selectAllLabel}>
+            <input
+              type="checkbox"
+              className={styles.modelCheckbox}
+              checked={allSelected}
+              onChange={toggleAll}
+              disabled={loading}
+            />
+            {t("benchmark.selectAll")}
+          </label>
+        </div>
         <div className={styles.modelGroups}>
           {MODEL_GROUPS.map(({ provider, label, models }) => (
             <div key={provider} className={styles.modelGroup}>

@@ -57,6 +57,7 @@
   "benchmark.title": "Benchmark",
   "benchmark.placeholder": "Enter text to translate…",
   "benchmark.selectModels": "Select Models",
+  "benchmark.selectAll": "All",
   "benchmark.run": "Run Benchmark",
   "benchmark.running": "Running…",
   "benchmark.duration": "Duration",

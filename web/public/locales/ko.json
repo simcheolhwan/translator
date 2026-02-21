@@ -57,6 +57,7 @@
   "benchmark.title": "벤치마크",
   "benchmark.placeholder": "번역할 텍스트를 입력하세요…",
   "benchmark.selectModels": "모델 선택",
+  "benchmark.selectAll": "모두",
   "benchmark.run": "벤치마크 실행",
   "benchmark.running": "실행 중…",
   "benchmark.duration": "소요 시간",
