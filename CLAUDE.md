@@ -86,6 +86,18 @@ web과 functions가 공유하는 코드. functions 패키지 안에 위치하며
 - `functions/src/shared/` — web과 공유하는 타입, 상수, 스키마, 프롬프트
 - Node.js 22 필요
 
+## Troubleshooting
+
+### 에뮬레이터 404/CORS 에러
+
+에뮬레이터가 `demo-no-project`를 프로젝트 ID로 사용하면 `VITE_API_URL`과 불일치하여 404/CORS 에러 발생.
+
+```bash
+firebase use translator-simcheolhwan  # .firebaserc 생성
+```
+
+이후 에뮬레이터 재시작. `.firebaserc`가 없으면 항상 `demo-no-project`로 폴백됨.
+
 ## Conventions
 
 - ESLint: `@typescript-eslint/no-unused-vars` — `_` 접두사로 무시
