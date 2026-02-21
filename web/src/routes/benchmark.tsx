@@ -15,7 +15,7 @@ const SAMPLE_EN = `Hey team, heads up, the staking pool is having some issues. W
 
 const SAMPLE_KO = `얘들아 참고로, 스테이킹 풀에 문제 좀 있어. 유저가 출금하려고 하면 화면에 보이는 토큰 가격이랑 실제 스왑 가격이 안 맞아서 예상보다 적게 받고 있거든. 가격 업데이트가 15초 정도 지연되는 것 같아. 그리고 지난 업데이트 이후로 트랜잭션 수수료가 원래보다 40% 정도 높게 나오고 있음. 수수료 설정 쪽 누가 한번 확인 좀 해줄 수 있어? 유저 컴플레인 더 들어오기 전에 고쳐야 될 것 같은데.`
 
-const DEFAULT_MODELS: Model[] = ["gpt-5.2", "claude-opus-4-6", "gemini-3-pro-preview"]
+const DEFAULT_MODELS: Model[] = ["gpt-5.2", "claude-opus-4-6", "gemini-3.1-pro-preview"]
 
 const PROVIDER_LABELS: Record<Provider, string> = {
   openai: "GPT",

@@ -4,7 +4,7 @@ export const MODELS = [
   "gpt-5-nano",
   "claude-opus-4-6",
   "claude-sonnet-4-6",
-  "gemini-3-pro-preview",
+  "gemini-3.1-pro-preview",
   "gemini-3-flash-preview",
 ] as const
 export type Model = (typeof MODELS)[number]
