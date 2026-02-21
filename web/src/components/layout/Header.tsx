@@ -16,10 +16,25 @@ export function Header() {
 
   return (
     <header className={styles.header}>
-      <Link to="/" className={styles.logo}>
-        <Languages size={24} className={styles.logoIcon} />
-        <span className={styles.logoText}>{t("app.title")}</span>
-      </Link>
+      <div className={styles.left}>
+        <Link to="/" className={styles.logo}>
+          <Languages size={24} className={styles.logoIcon} />
+          <span className={styles.logoText}>{t("app.title")}</span>
+        </Link>
+
+        {isAuthenticated && (
+          <nav className={styles.nav}>
+            <Link to="/grammar" className={styles.navLink}>
+              <SpellCheck size={16} />
+              <span>{t("grammar.title")}</span>
+            </Link>
+            <Link to="/benchmark" className={styles.navLink}>
+              <Timer size={16} />
+              <span>{t("benchmark.title")}</span>
+            </Link>
+          </nav>
+        )}
+      </div>
 
       <div className={styles.actions}>
         <button
@@ -32,25 +47,9 @@ export function Header() {
         </button>
 
         {isAuthenticated && (
-          <>
-            <Link to="/grammar" className={styles.settingsButton} aria-label={t("grammar.title")}>
-              <SpellCheck size={20} />
-            </Link>
-            <Link
-              to="/benchmark"
-              className={styles.settingsButton}
-              aria-label={t("benchmark.title")}
-            >
-              <Timer size={20} />
-            </Link>
-            <Link
-              to="/settings"
-              className={styles.settingsButton}
-              aria-label={t("header.settings")}
-            >
-              <Settings size={20} />
-            </Link>
-          </>
+          <Link to="/settings" className={styles.settingsButton} aria-label={t("header.settings")}>
+            <Settings size={20} />
+          </Link>
         )}
       </div>
     </header>
