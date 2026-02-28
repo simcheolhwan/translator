@@ -18,8 +18,12 @@
   composes: actions from "../chat/ChatInput.module.css";
 }
 
-.iconButton {
-  composes: iconButton from "../chat/ChatInput.module.css";
+.pasteButton {
+  composes: pasteButton from "../chat/ChatInput.module.css";
+}
+
+.pasteLabel {
+  composes: pasteLabel from "../chat/ChatInput.module.css";
 }
 
 .submitButton {

@@ -120,11 +120,12 @@ export function ChatInput({
         <div className={styles.actions}>
           <button
             type="button"
-            className={styles.iconButton}
+            className={styles.pasteButton}
             onClick={handlePaste}
             title={t("chat.paste")}
           >
             <ClipboardPaste size={16} />
+            <span className={styles.pasteLabel}>{t("chat.paste")}</span>
           </button>
           <button
             type="submit"
